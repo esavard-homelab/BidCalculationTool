@@ -1,0 +1,14 @@
+# Dockerfile for development with hot reload
+FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim
+
+WORKDIR /app
+
+# Copy project file and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy source code
+COPY . ./
+
+# Default command (will be overridden by docker-compose)
+CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:5000"]

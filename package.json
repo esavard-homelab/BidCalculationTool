@@ -1,0 +1,16 @@
+{
+  "name": "bidtool-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "init": "npx zx scripts/init.mjs",
+    "dev": "docker-compose -f docker-compose.parent.yml -f docker-compose.dev.yml up --build",
+    "prod": "docker-compose -f docker-compose.parent.yml -f docker-compose.prod.yml up --build",
+    "docs": "docker run --rm -v $(pwd)/docs:/docs plantuml/plantuml -tsvg docs/diagrams/*.puml",
+    "down": "docker-compose down"
+  },
+  "devDependencies": {
+    "zx": "^7.2.3"
+  }
+}
