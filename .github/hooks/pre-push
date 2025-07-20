@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "🔍 Running CI tests before push..."
+npm run test:ci
+
+if [ $? -ne 0 ]; then
+    echo "❌ Tests failed! Push aborted."
+    exit 1
+fi
+
+echo "✅ All tests passed! Proceeding with push..."
+exit 0

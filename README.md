@@ -1,3 +1,5 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=esavard-homelab_BidCalculationTool&metric=alert_status&token=77e6f0f63f46ba352de431957f94d6c59dc325c9)](https://sonarcloud.io/summary/new_code?id=esavard-homelab_BidCalculationTool)
+
 # The Bid Calculation Tool
 
 A full-stack web application for calculating the total price of vehicles (Common or Luxury) at car auctions, including
@@ -35,23 +37,46 @@ For a **Common vehicle** priced at **$1,000**:
 ### Project Structure
 ```
 BidCalculationTool/
-├── backend/                # .NET Core 8 API
-│   ├── Dockerfile          # Production image
-│   ├── Dockerfile.dev      # Development with hot reload
-│   ├── backend.csproj      # Project configuration
-│   └── Program.cs          # Application entry point
-├── frontend/               # Vue.js 3 application
-│   ├── Dockerfile          # Production image (Nginx)
-│   ├── Dockerfile.dev      # Development with hot reload
-│   ├── package.json        # Dependencies and scripts
-│   └── src/                # Vue.js source code
-├── docs/                   # Documentation
-│   ├── adr/                # Architectural Decision Records
-│   ├── requirements/       # Original coding challenge description
-│   └── c4/                 # C4 architecture diagrams
-├── scripts/                # Automation scripts
-│   └── init.mjs            # Project initialization
-└── docker-compose files    # Multi-environment orchestration
+├── backend/                                   # .NET Core 8 backend (DDD architecture)
+│   ├── src/
+│   │   ├── BidCalculationTool.Api/            # API layer (controllers, endpoints, Program.cs)
+│   │   ├── BidCalculationTool.Application/    # Application layer (use cases, application services)
+│   │   ├── BidCalculationTool.Domain/         # Domain layer (entities, aggregates, interfaces)
+│   │   └── BidCalculationTool.Infrastructure/ # Infrastructure layer (implementations, data access)
+│   ├── tests/                                 # Backend tests
+│   ├── BidCalculationTool.sln                 # Solution file
+│   ├── backend.http                           # HTTP requests for testing
+│   ├── Dockerfile                             # Production image
+│   └── Dockerfile.dev                         # Development with hot reload
+├── frontend/                                  # Vue.js 3 application
+│   ├── src/
+│   │   ├── components/                        # Reusable UI components (BaseButton, etc.)
+│   │   ├── features/                          # Feature modules
+│   │   │   └── BidCalculator/
+│   │   │       ├── components/                # Feature-specific components (FeeBreakdown)
+│   │   │       ├── dto/                       # DTOs/types for API communication
+│   │   │       ├── services/                  # UI logic (BidCalculationService)
+│   │   │       └── BidCalculatorView.vue      # Main calculator view
+│   │   ├── services/                          # Global services (ApiClient)
+│   │   ├── dto/                               # Global DTOs/types (VehicleType)
+│   │   ├── router/                            # Router configuration
+│   │   ├── store/                             # State management
+│   │   └── assets/                            # Images, styles
+│   ├── e2e/                                   # End-to-end tests
+│   ├── public/                                # Static assets
+│   ├── package.json                           # Dependencies and scripts
+│   ├── Dockerfile                             # Production image (Nginx)
+│   └── Dockerfile.dev                         # Development with hot reload
+├── docs/                                      # Documentation
+│   ├── adr/                                   # Architectural Decision Records
+│   ├── requirements/                          # Challenge description
+│   └── c4/                                    # C4 architecture diagrams
+├── scripts/                                   # Automation scripts
+│   └── init.mjs                               # Project initialization
+├── docker-compose.parent.yml                  # Base Docker configuration
+├── docker-compose.dev.yml                     # Development overrides
+├── docker-compose.prod.yml                    # Production overrides
+└── package.json                               # Root project scripts
 ```
 
 
@@ -59,7 +84,7 @@ BidCalculationTool/
 
 ### Prerequisites
 - **Docker** + **Docker Compose**
-- **Node.js** ≥ 18.x (for build scripts)
+- **Node.js** ≥ 22.x (for build scripts)
 
 ### Quick Start
 ```bash
