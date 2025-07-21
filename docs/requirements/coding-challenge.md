@@ -2,13 +2,16 @@
 
 ## Objective 
 
-The purpose of the following exercise is to assess a programmer's ability to develop a minimum viable product. Note that this exercise does not simulate a real work situation. The objective is to develop a simple application using good programming practices. 
+The purpose of the following exercise is to assess a programmer's ability to develop a minimum viable product. 
+Note that this exercise does not simulate a real work situation. The objective is to develop a simple application using 
+good programming practices. 
 
 
 ## Details 
 
 * We expect a web application
-* Since we are looking for a full-stack developer, you need to provide one backend and one frontend communicating together
+* Since we are looking for a full-stack developer, you need to provide one backend and one frontend communicating 
+together
 * The programming language to use for the backend is the one specified in the job description
 * The frontend (UI) should be built using an appropriate framework (ideally Vue.js)
 * The code must be submitted via GitHub
@@ -17,22 +20,27 @@ The purpose of the following exercise is to assess a programmer's ability to dev
 
 ## Evaluation Criteria 
 
-The final solution will be evaluated according to the following criteria, taking into account the expected level of experience: 
+The final solution will be evaluated according to the following criteria, taking into account the expected level of 
+experience: 
 
-* Clarity and readability of code, formatting, naming conventions, etc. * Algorithm and calculation results 
+* Clarity and readability of code, formatting, naming conventions, etc.
+* Algorithm and calculation results 
 * Use of Object-Oriented Programming principles
 * Implementation of good software architecture practices (Clean Code, SOLID, KISS, DRY, YAGNI, etc.)
 * Proper use of frameworks, tools, and libraries related to the programming language used
 * Implementation of unit tests
 * AI usage
 
-👉 **IMPORTANT**: If you make compromises on certain aspects of your code, please add a descriptive text by e-mail or in a comment, explaining what you would improve to make your code production-ready. 
+👉 **IMPORTANT**: If you make compromises on certain aspects of your code, please add a descriptive text by e-mail or in 
+a comment, explaining what you would improve to make your code production-ready. 
 
 
 ## Task Description
  
-Develop an application that will allow a buyer to calculate the total price of a vehicle (common or luxury) at a car auction. The software must consider several costs in the calculation. The buyer must pay various fees for the transaction, all of which are
- calculated on the base price amount. The total amount calculated is the winning bid amount (vehicle base price) plus the fees based on the vehicle price and vehicle type. Fees must be dynamically computed. 
+Develop an application that will allow a buyer to calculate the total price of a vehicle (common or luxury) at a car 
+auction. The software must consider several costs in the calculation. The buyer must pay various fees for the 
+transaction, all of which are calculated on the base price amount. The total amount calculated is the winning bid amount 
+(vehicle base price) plus the fees based on the vehicle price and vehicle type. Fees must be dynamically computed. 
 
  
 ## Requirements
@@ -64,8 +72,8 @@ Develop an application that will allow a buyer to calculate the total price of a
 * Vehicle Price (Common): $1000 
 * Basic buyer fee: $50 (10%, min: $10, max. $50) 
 * Special fee: $20 (2%) 
-* Association fee: $10  
-* Storage fee: $100  
+* Association fee: $10
+* Storage fee: $100 
 * **Total**: $1180 = 1000$ + 50$ + 20$ + 10$ + 100$ 
 
 

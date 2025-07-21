@@ -1,9 +1,20 @@
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers(); // Ajout du support des controllers
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "Bid Calculation API", Version = "v1" });
+});
 
 // Add CORS for frontend communication
 builder.Services.AddCors(options =>
@@ -27,17 +38,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
+app.UseHttpsRedirection();
 
-// BidCalculation API endpoint for testing connection
-app.MapGet("/BidCalculation/datetime", () => new
-    {
-        Message = "Connection successful to Bid Calculation Tool API",
-        DateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-        ServerTimeZone = TimeZoneInfo.Local.DisplayName
-    })
-.WithName("GetBidCalculationDateTime")
-.WithOpenApi()
-.WithSummary("Test endpoint to verify API connectivity")
-.WithDescription("Returns current server date/time for frontend connection testing");
+// Map controllers instead of individual endpoints
+app.MapControllers();
 
 app.Run();

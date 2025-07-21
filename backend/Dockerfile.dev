@@ -1,14 +1,19 @@
-# Dockerfile for development with hot reload
+# Dockerfile for BidCalculationTool with hot-reload (Development)
 FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim
 
 WORKDIR /app
 
-# Copy project file and restore dependencies
-COPY *.csproj ./
+# Copy solution and project files
+COPY BidCalculationTool.sln ./
+COPY src/BidCalculationTool.Api/BidCalculationTool.Api.csproj ./src/BidCalculationTool.Api/
+COPY src/BidCalculationTool.Application/BidCalculationTool.Application.csproj ./src/BidCalculationTool.Application/
+COPY src/BidCalculationTool.Domain/BidCalculationTool.Domain.csproj ./src/BidCalculationTool.Domain/
+
+# Restore dependencies
 RUN dotnet restore
 
 # Copy source code
-COPY . ./
+COPY src/ ./src/
 
-# Default command (will be overridden by docker-compose)
-CMD ["dotnet", "watch", "run", "--urls=http://0.0.0.0:5000"]
+# Stay in /app and specify the project path explicitly
+CMD ["dotnet", "watch", "run", "--project", "src/BidCalculationTool.Api/BidCalculationTool.Api.csproj", "--urls=http://0.0.0.0:5000"]
