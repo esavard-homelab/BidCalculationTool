@@ -9,7 +9,7 @@
     "prod": "docker-compose -f docker-compose.parent.yml -f docker-compose.prod.yml up --build",
     "docs": "docker run --rm -v $(pwd)/docs:/docs plantuml/plantuml -tsvg docs/diagrams/*.puml",
     "down": "docker-compose down",
-    "test:ci": "./test-ci.sh",
+    "test:ci": "scripts/test-ci.sh",
     "test:ci:frontend": "cd frontend && npm run lint && npm run test:unit:ci && npm run test:coverage && npm run type-check && npm run build",
     "test:ci:backend": "dotnet clean backend/BidCalculationTool.sln && dotnet restore backend/BidCalculationTool.sln && dotnet build backend/BidCalculationTool.sln --no-restore && dotnet test backend/BidCalculationTool.sln --no-build --verbosity normal --collect:\"XPlat Code Coverage\"",
     "setup": "cd frontend && npm install && cd .. && dotnet restore backend/BidCalculationTool.sln",
