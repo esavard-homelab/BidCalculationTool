@@ -127,8 +127,8 @@ jobs:
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.scanner.skipJreProvisioning=true \
           /d:sonar.projectBaseDir="." \
-          /d:sonar.sources="backend/BidCalculationTool.Api,backend/BidCalculationTool.Core,frontend/src" \
-          /d:sonar.tests="backend/BidCalculationTool.Tests,frontend/src/test" \
+          /d:sonar.sources="backend/src,frontend/src" \
+          /d:sonar.tests="backend/tests,frontend/src/test" \
           /d:sonar.exclusions="**/node_modules/**,**/bin/**,**/obj/**,**/*.d.ts,**/coverage/**" \
           /d:sonar.cs.dotcover.reportsPaths="coverage/**/coverage.cobertura.xml" \
           /d:sonar.javascript.lcov.reportPaths="frontend/coverage/lcov.info"
