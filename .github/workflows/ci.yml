@@ -126,17 +126,13 @@ jobs:
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.scanner.skipJreProvisioning=true \
-          /d:sonar.projectBaseDir="." \
-          /d:sonar.sources="backend/src,frontend/src" \
-          /d:sonar.tests="backend/tests,frontend/src/test" \
-          /d:sonar.exclusions="**/node_modules/**,**/bin/**,**/obj/**,**/*.d.ts,**/coverage/**" \
-          /d:sonar.cs.dotcover.reportsPaths="coverage/**/coverage.cobertura.xml" \
-          /d:sonar.javascript.lcov.reportPaths="frontend/coverage/lcov.info"
+          /d:sonar.exclusions="**/node_modules/**,**/bin/**,**/obj/**,**/*.d.ts,**/coverage/**"
   
-      - name: Build and test
+      - name: Build and test .NET projects
         run: |
-          dotnet build backend/BidCalculationTool.sln
-          dotnet test backend/BidCalculationTool.sln --collect:"XPlat Code Coverage"
+          dotnet restore backend/BidCalculationTool.sln
+          dotnet build backend/BidCalculationTool.sln --no-restore
+          dotnet test backend/BidCalculationTool.sln --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
   
       - name: Frontend tests for SonarCloud
         working-directory: frontend
