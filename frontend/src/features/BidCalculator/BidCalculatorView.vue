@@ -50,7 +50,7 @@ import type { VehicleTypeOption } from './services/BidCalculationService'
 import FeeBreakdown from './components/FeeBreakdown.vue'
 import {VehiclePriceValidator} from "@/features/BidCalculator/validators/VehiclePriceValidator.ts";
 
-const vehiclePrice = ref<number>(1000)
+const vehiclePrice = ref<number | null>(null)
 const vehicleType = ref<string>('Common')
 const vehicleTypes = ref<VehicleTypeOption[]>([])
 const calculation = ref<BidCalculationResponse | null>(null)
@@ -76,6 +76,13 @@ async function calculateBid() {
   priceError.value = null
   error.value = null
 
+  // Do not calculate if vehicle price is not set
+  if (vehiclePrice.value === null || vehiclePrice.value === undefined ||
+    typeof vehiclePrice.value !== 'number') {
+    calculation.value = null
+    return
+  }
+
   // Validate price
   const validationError = VehiclePriceValidator.validate(vehiclePrice.value)
   if (validationError) {
@@ -99,7 +106,6 @@ async function calculateBid() {
 onMounted(async () => {
   loading.value = true
   await loadVehicleTypes()
-  await calculateBid()
   loading.value = false
 })
 </script>
