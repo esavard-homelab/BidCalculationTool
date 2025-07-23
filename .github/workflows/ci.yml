@@ -68,7 +68,7 @@ jobs:
         run: dotnet build backend/BidCalculationTool.sln --no-restore
 
       - name: Test with coverage
-        run: dotnet test backend/BidCalculationTool.sln --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test backend/BidCalculationTool.sln --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
@@ -126,7 +126,8 @@ jobs:
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.scanner.skipJreProvisioning=true \
-          /d:sonar.exclusions="**/node_modules/**,**/bin/**,**/obj/**,**/*.d.ts,**/coverage/**"
+          /d:sonar.exclusions="**/node_modules/**,**/bin/**,**/obj/**,**/*.d.ts,**/coverage/**" \
+          /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.cobertura.xml"
   
       - name: Build and test .NET projects
         run: |
