@@ -1,3 +1,4 @@
+using BidCalculationTool.Application;
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -8,8 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers(); // Ajout du support des controllers
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Inject the domain services
+builder.Services.AddApplication();
 
 builder.Services.AddSwaggerGen(c =>
 {

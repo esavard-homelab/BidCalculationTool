@@ -1,31 +1,46 @@
 using BidCalculationTool.Domain.Dto;
+using BidCalculationTool.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using BidCalculationTool.Domain.Enums;
 
 namespace BidCalculationTool.Api.Controllers;
 
+/// <summary>
+/// Controller for handling bid calculations.
+/// This controller provides endpoints to calculate total price based on bid requests.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class BidCalculationController : ControllerBase
 {
+    private readonly IBidCalculationService _bidCalculationService;
+
+    /// <summary>
+    /// Constructor for BidCalculationController
+    /// Initializes a new instance of the <see cref="BidCalculationController"/> class.
+    /// </summary>
+    /// <param name="bidCalculationService">Injected service that calculate fees and total price.</param>
+    public BidCalculationController(IBidCalculationService bidCalculationService)
+    {
+        _bidCalculationService = bidCalculationService;
+    }
+
+    /// <summary>
+    /// Calculates the total price based on the provided bid request.
+    /// </summary>
+    /// <param name="request">The <see cref="BidCalculationRequestDto"/> required for the calculation.</param>
+    /// <returns><see cref="BidCalculationResponseDto"/></returns>
     [HttpPost]
     public IActionResult CalculateBid([FromBody] BidCalculationRequestDto request)
     {
-        // TODO: Implémenter la logique de calcul
-        // Vous pourrez injecter vos services Application ici
-
-        return Ok(new BidCalculationResponseDto
-        {
-            VehiclePrice = request.VehiclePrice,
-            VehicleType = request.VehicleType,
-            BasicBuyerFee = 0, // TODO: Calculer
-            SellerSpecialFee = 0, // TODO: Calculer
-            AssociationFee = 0, // TODO: Calculer
-            StorageFee = 100, // Fixe
-            TotalCost = 0 // TODO: Calculer
-        });
+        var response = _bidCalculationService.CalculateTotalPrice(request);
+        return Ok(response);
     }
 
+    /// <summary>
+    /// Retrieves the list of available vehicle types.
+    /// </summary>
+    /// <returns><see cref="IActionResult"/> that contains all vehicle types and descriptions</returns>
     [HttpGet("vehicle-types")]
     public IActionResult GetVehicleTypes()
     {

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Applicat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Domain", "src\BidCalculationTool.Domain\BidCalculationTool.Domain.csproj", "{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,13 @@ Global
 		{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
