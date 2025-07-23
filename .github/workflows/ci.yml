@@ -70,6 +70,9 @@ jobs:
       - name: Test with coverage
         run: dotnet test backend/BidCalculationTool.sln --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
+      - name: Check code coverage files
+        run: ls -R ./coverage
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
