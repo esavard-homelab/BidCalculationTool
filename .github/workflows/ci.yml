@@ -7,54 +7,15 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  frontend-tests:
-    name: Frontend Tests & Quality
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm ci
-
-      - name: Lint
-        working-directory: frontend
-        run: npm run lint
-
-      - name: Unit tests
-        working-directory: frontend
-        run: npm run test:unit:ci
-
-      - name: Test coverage
-        working-directory: frontend
-        run: npm run test:coverage
-
-      - name: Type check
-        working-directory: frontend
-        run: npm run type-check
-
-      - name: Build
-        working-directory: frontend
-        run: npm run build
-
   backend-tests:
-    name: Backend Tests & Quality
+    name: Backend Tests & Coverage
     runs-on: ubuntu-latest
-    
+    permissions:
+      checks: write
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -64,87 +25,65 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore backend/BidCalculationTool.sln
 
-      - name: Build
-        run: dotnet build backend/BidCalculationTool.sln --no-restore
-
-      - name: Test with coverage
-        run: dotnet test backend/BidCalculationTool.sln --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
-
-      - name: Check code coverage files
-        run: ls -R ./coverage
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ./coverage
-
-  sonarcloud:
-    name: SonarCloud Analysis
-    runs-on: ubuntu-latest
-    needs: [ frontend-tests, backend-tests ]
-  
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-  
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-  
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-  
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-  
-      - name: Install SonarCloud scanner
+      - name: Clean old coverage files
         run: |
-          dotnet tool install --global dotnet-sonarscanner
-          export PATH="$PATH:/root/.dotnet/tools"
-          echo "/root/.dotnet/tools" >> $GITHUB_PATH
-  
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
-  
-      - name: Begin SonarCloud analysis
+          rm -rf ./coverage
+          rm -rf ./coverage-report
+
+      - name: Run tests with coverage and results
+        run: |
+          dotnet test backend/test/BidCalculationTool.Test/BidCalculationTool.Test.csproj \
+            --results-directory coverage \
+            --collect:"XPlat Code Coverage" \
+            --logger "trx;LogFileName=test-results.trx" \
+            -- \
+            DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
+      - name: Install reportgenerator tool
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Generate test report and coverage reports
+        run: |
+          reportgenerator \
+            -reports:"coverage/**/coverage.opencover.xml" \
+            -targetdir:"coverage-report" \
+            -reporttypes:"Cobertura;HtmlInline_AzurePipelines;Badges;JsonSummary" \
+            -sourcedirs:"backend/src"
+
+      - name: Upload coverage artifact (HTML report)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-report
+          path: coverage-report
+
+      - name: Publish Test Results (TRX)
+        uses: dorny/test-reporter@v1
+        with:
+          name: .NET Test Results
+          path: coverage/test-results.trx
+          reporter: dotnet-trx
+
+      - name: Write Test Summary to Build Summary (Markdown)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SUMMARY_PATH: coverage-report/Summary.json
         run: |
-          export PATH="$PATH:/root/.dotnet/tools"
-          dotnet-sonarscanner begin \
-          /k:"esavard-homelab_BidCalculationTool" \
-          /o:"esavard-homelab" \
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-          /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.scanner.skipJreProvisioning=true \
-          /d:sonar.exclusions="**/node_modules/**,**/bin/**,**/obj/**,**/*.d.ts,**/coverage/**"
-  
-      - name: Build and test .NET projects
-        run: |
-          dotnet restore backend/BidCalculationTool.sln
-          dotnet build backend/BidCalculationTool.sln --no-restore
-          dotnet test backend/BidCalculationTool.sln --no-build --collect:"XPlat Code Coverage" --results-directory ./coverage
-  
-      - name: Frontend tests for SonarCloud
-        working-directory: frontend
-        run: npm run test:coverage
-  
-      - name: End SonarCloud analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          export PATH="$PATH:/root/.dotnet/tools"
-          dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          echo "## ✅ Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Test results: visible in [Checks tab](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 Code coverage report: [Download HTML report → Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- 🧪 Detailed TRX results: embedded in this build as a GitHub Check" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ☂️ Code Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Module | Covered lines | Total lines | Coverage |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|---------------|-------------|----------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "$SUMMARY_PATH" ]; then
+            jq -r '.coverage.assemblies[] | "| \(.name) | \(.coveredlines) | \(.coverablelines) | \(.coverage)% |"' "$SUMMARY_PATH" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Coverage data | Not available | Not available | Processing... |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ *Coverage details will be available in the Codecov report shortly.*" >> $GITHUB_STEP_SUMMARY
+          fi

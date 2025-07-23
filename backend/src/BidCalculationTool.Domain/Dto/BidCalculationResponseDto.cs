@@ -1,3 +1,5 @@
+using BidCalculationTool.Domain.Enums;
+
 namespace BidCalculationTool.Domain.Dto;
 
 /// <summary>
@@ -6,11 +8,11 @@ namespace BidCalculationTool.Domain.Dto;
 /// </summary>
 public record BidCalculationResponseDto
 {
-    public decimal VehiclePrice { get; set; }
-    public required string VehicleType { get; set; }
-    public decimal BasicBuyerFee { get; init; }
-    public decimal SellerSpecialFee { get; init; }
-    public decimal AssociationFee { get; init; }
-    public decimal StorageFee { get; init; }
-    public decimal TotalCost { get; init; }
+    public required decimal VehiclePrice { get; init; }
+    public required VehicleTypeEnum VehicleType { get; init; }
+    public required decimal BasicBuyerFee { get; init; }
+    public required decimal SellerSpecialFee { get; init; }
+    public required decimal AssociationFee { get; init; }
+    public required decimal StorageFee { get; init; }
+    public required decimal TotalCost { get; init; }
 }

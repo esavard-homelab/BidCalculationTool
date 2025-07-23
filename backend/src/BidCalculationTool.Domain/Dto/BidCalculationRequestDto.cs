@@ -9,6 +9,6 @@ namespace BidCalculationTool.Domain.Dto;
 /// </summary>
 public record BidCalculationRequestDto
 {
-    public required decimal VehiclePrice { get; set; }
-    public required string VehicleType { get; set; }
+    public required decimal VehiclePrice { get; init; }
+    public required VehicleTypeEnum VehicleType { get; init; }
 }

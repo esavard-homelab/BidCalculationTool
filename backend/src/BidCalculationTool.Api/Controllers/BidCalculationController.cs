@@ -44,7 +44,7 @@ public class BidCalculationController : ControllerBase
     [HttpGet("vehicle-types")]
     public IActionResult GetVehicleTypes()
     {
-        var vehicleTypes = Enum.GetValues<VehicleType>()
+        var vehicleTypes = Enum.GetValues<VehicleTypeEnum>()
             .Select(vt => new VehicleTypeDto
             {
                 Value = vt.ToDisplayString(),

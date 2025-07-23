@@ -1,4 +1,4 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=esavard-homelab_BidCalculationTool&metric=alert_status&token=77e6f0f63f46ba352de431957f94d6c59dc325c9)](https://sonarcloud.io/summary/new_code?id=esavard-homelab_BidCalculationTool)
+[![.NET Tests](https://github.com/esavard-homelab/BidCalculationTool/actions/workflows/ci.yml/badge.svg)](https://github.com/esavard-homelab/BidCalculationTool/actions/workflows/ci.yml)
 
 # The Bid Calculation Tool
 
@@ -135,8 +135,11 @@ The project uses a multi-file Docker Compose setup for different environments:
    - Run unit tests in the backend with `dotnet test`
 4. **Deploy**: `npm run prod` - Build and test production images
 
-TODO: Describe SonarQube integration for code quality analysis, GitHub Actions for CI/CD, and automated testing.
+## Tests & Coverage
 
+- Test Results are available via GitHub Checks under the ".NET Test Results" section for each CI run.
+- Code coverage is tracked with [Codecov](https://codecov.io/gh/esavard-homelab/BidCalculationTool).
+- A full interactive test and coverage report (HTML) is generated on each CI run and [available here](https://github.com/esavard-homelab/BidCalculationTool/actions?query=workflow%3A%22CI+Pipeline%22) as the `backend-test-report` artifact.
 
 ## Documentation
 

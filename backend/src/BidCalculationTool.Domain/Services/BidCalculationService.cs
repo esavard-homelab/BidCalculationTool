@@ -1,4 +1,5 @@
 using BidCalculationTool.Domain.Dto;
+using BidCalculationTool.Domain.Enums;
 
 namespace BidCalculationTool.Domain.Services;
 
@@ -49,16 +50,16 @@ public class BidCalculationService : IBidCalculationService
     /// This method calculates the basic buyer fee based on the vehicle price and type.
     /// </summary>
     /// <param name="vehiclePrice"></param>
-    /// <param name="vehicleType"></param>
+    /// <param name="vehicleTypeEnum"></param>
     /// <returns>The basic buyer fee</returns>
     /// <exception cref="ArgumentException"></exception>
-    private static decimal CalculateBasicBuyerFee(decimal vehiclePrice, string vehicleType)
+    private static decimal CalculateBasicBuyerFee(decimal vehiclePrice, VehicleTypeEnum vehicleTypeEnum)
     {
-        return vehicleType switch
+        return vehicleTypeEnum switch
         {
-            "Common" => Math.Max(10, Math.Min(50, vehiclePrice * 0.10m)),
-            "Luxury" => Math.Max(25, Math.Min(200, vehiclePrice * 0.10m)),
-            _ => throw new ArgumentException($"Invalid vehicle type: {vehicleType}")
+            VehicleTypeEnum.Common => Math.Max(10, Math.Min(50, vehiclePrice * 0.10m)),
+            VehicleTypeEnum.Luxury => Math.Max(25, Math.Min(200, vehiclePrice * 0.10m)),
+            _ => throw new ArgumentException($"Invalid vehicle type: {vehicleTypeEnum}")
         };
     }
 
@@ -66,16 +67,16 @@ public class BidCalculationService : IBidCalculationService
     /// This method calculates the special fee based on the vehicle price and type.
     /// </summary>
     /// <param name="vehiclePrice"></param>
-    /// <param name="vehicleType"></param>
+    /// <param name="vehicleTypeEnum"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    private static decimal CalculateSpecialFee(decimal vehiclePrice, string vehicleType)
+    private static decimal CalculateSpecialFee(decimal vehiclePrice, VehicleTypeEnum vehicleTypeEnum)
     {
-        return vehicleType switch
+        return vehicleTypeEnum switch
         {
-            "Common" => vehiclePrice * 0.02m,
-            "Luxury" => vehiclePrice * 0.04m,
-            _ => throw new ArgumentException($"Invalid vehicle type: {vehicleType}")
+            VehicleTypeEnum.Common => vehiclePrice * 0.02m,
+            VehicleTypeEnum.Luxury => vehiclePrice * 0.04m,
+            _ => throw new ArgumentException($"Invalid vehicle type: {vehicleTypeEnum}")
         };
     }
 }

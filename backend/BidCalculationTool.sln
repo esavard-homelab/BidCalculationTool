@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -9,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Applicat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Domain", "src\BidCalculationTool.Domain\BidCalculationTool.Domain.csproj", "{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Test", "test\BidCalculationTool.Test\BidCalculationTool.Test.csproj", "{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

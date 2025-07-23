@@ -3,17 +3,16 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim
 
 WORKDIR /app
 
-# Copy solution and project files
-COPY BidCalculationTool.sln ./
+# Copy only source project files for restore (no tests needed)
 COPY src/BidCalculationTool.Api/BidCalculationTool.Api.csproj ./src/BidCalculationTool.Api/
 COPY src/BidCalculationTool.Application/BidCalculationTool.Application.csproj ./src/BidCalculationTool.Application/
 COPY src/BidCalculationTool.Domain/BidCalculationTool.Domain.csproj ./src/BidCalculationTool.Domain/
 
-# Restore dependencies
-RUN dotnet restore
+# Restore dependencies for API project (this will restore all referenced projects)
+RUN dotnet restore src/BidCalculationTool.Api/BidCalculationTool.Api.csproj
 
-# Copy source code
+# Copy only source code (tests not needed in dev container)
 COPY src/ ./src/
 
-# Stay in /app and specify the project path explicitly
+# Run the API project directly
 CMD ["dotnet", "watch", "run", "--project", "src/BidCalculationTool.Api/BidCalculationTool.Api.csproj", "--urls=http://0.0.0.0:5000"]
