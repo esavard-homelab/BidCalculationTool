@@ -48,7 +48,7 @@ import { bidCalculationService } from './services/BidCalculationService'
 import type { BidCalculationResponse } from './dto/BidCalculationDto'
 import type { VehicleTypeOption } from './services/BidCalculationService'
 import FeeBreakdown from './components/FeeBreakdown.vue'
-import {VehiclePriceValidator} from "@/features/BidCalculator/validators/VehiclePriceValidator.ts";
+import {VehiclePriceValidator} from '@/features/BidCalculator/validators/VehiclePriceValidator.ts';
 
 const vehiclePrice = ref<number | null>(null)
 const vehicleType = ref<string>('Common')
