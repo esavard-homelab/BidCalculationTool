@@ -75,6 +75,6 @@ fi
 # Open automatically the report
 if command -v xdg-open &> /dev/null; then
     echo ""
-    echo "🚀 Ouverture automatique du rapport..."
+    echo "🚀 Automatically opening report..."
     xdg-open "../$COVERAGE_DIR/html-report/index.html"
 fi
