@@ -13,7 +13,7 @@ public enum VehicleTypeEnum
 /// <summary>
 /// This static class provides extension methods for the VehicleTypeEnum enum.
 /// </summary>
-public static class VehicleTypeExtensions
+public static partial class VehicleTypeExtensions
 {
     /// <summary>
     /// Converts the vehicle type enum value to its display string representation.
