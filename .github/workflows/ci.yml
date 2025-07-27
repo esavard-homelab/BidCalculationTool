@@ -16,7 +16,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -87,3 +86,4 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "ℹ️ *Coverage details will be available in the Codecov report shortly.*" >> $GITHUB_STEP_SUMMARY
           fi
+          
