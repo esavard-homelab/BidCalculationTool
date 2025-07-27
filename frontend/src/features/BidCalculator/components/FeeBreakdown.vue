@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import type { BidCalculationResponse } from '../dto/BidCalculationDto'
-import {CurrencyFormatter} from "@/shared/utils/CurrencyFormatter.ts";
+import {CurrencyFormatter} from '@/shared/utils/CurrencyFormatter.ts';
 
 interface Props {
   calculation: BidCalculationResponse
