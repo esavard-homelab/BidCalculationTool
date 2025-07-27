@@ -68,8 +68,8 @@ try:
     print(f'  🔀 Branches Coverage: {summary[\"branchcoverage\"]:.1f}%')
     print(f'  📝 Line Coverage: {summary[\"coveredlines\"]} / {summary[\"coverablelines\"]}')
 except:
-    print('  ℹ️  JSON Summary unvailable')
-" 2>/dev/null || echo "  ℹ️  JSON Summary unvailable"
+    print('  ℹ️  JSON Summary unavailable')
+" 2>/dev/null || echo "  ℹ️  JSON Summary unavailable"
 fi
 
 # Open automatically the report
