@@ -19,10 +19,12 @@ RUN dotnet publish src/BidCalculationTool.Api/BidCalculationTool.Api.csproj -c R
 
 # Runtime stage - smaller image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS runtime
+
 WORKDIR /app
 
 # Copy published app from build stage
 COPY --from=build /app/publish .
 
 EXPOSE 5000
+
 ENTRYPOINT ["dotnet", "BidCalculationTool.Api.dll"]
