@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BidCalculatorView from './features/BidCalculator/BidCalculatorView.vue'
+import BidCalculatorView from './modules/BidCalculator/views/BidCalculatorView.vue'
 </script>
 
 <template>

@@ -1,0 +1,47 @@
+@startuml sequence-diagram
+!theme plain
+
+title Bid Calculation - User Flow (Sequence Diagram)
+
+actor "User" as user
+participant "Web Interface" as ui
+participant "API Backend" as api
+participant "Calculation Service" as calc
+
+user -> ui : 1. Opens application
+ui -> api : 2. GET /api/vehicletypes
+note right : Loads available vehicle types
+api -> ui : 3. Returns vehicle types
+note left : ["Common", "Luxury"]
+ui -> user : 4. Displays form with type dropdown
+
+user -> ui : 5. Enters vehicle price ($1,000)
+user -> ui : 6. Selects type (Common/Luxury)
+ui -> api : 7. POST /api/bidcalculation
+note right : {"price": 1000, "vehicleType": "Common"}
+
+api -> calc : 8. Calculates fees
+note right
+  • Buyer fee: 10% (max $50 for Common)
+  • Special fee: 2% for Common
+  • Association fee: based on price range
+  • Storage fee: $100 fixed
+end note
+
+calc -> api : 9. Returns calculated total
+note left : {"totalPrice": 1180, "breakdown": {...}}
+
+api -> ui : 10. JSON response with details
+ui -> user : 11. Displays total price and breakdown
+
+note over user, calc
+  **Example for Common vehicle at $1,000:**
+  Base price: $1,000
+  + Buyer fee: $50
+  + Special fee: $20  
+  + Association fee: $10
+  + Storage fee: $100
+  = **Total: $1,180**
+end note
+
+@enduml

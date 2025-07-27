@@ -20,6 +20,11 @@ builder.Services.AddApplication();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Bid Calculation API", Version = "v1" });
+
+    // Include XML comments for Swagger documentation
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 // Add CORS for frontend communication
@@ -42,6 +47,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// TODO: For production deployment, configure HTTPS redirection and SSL/TLS settings
+// to secure east-west traffic between services. Consider:
+// - app.UseHttpsRedirection() for enforcing HTTPS
+// - Configure SSL certificates in appsettings.Production.json
+// - Set up proper TLS termination at load balancer or reverse proxy level
+// - Update CORS policy to use HTTPS origins instead of HTTP
 
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
