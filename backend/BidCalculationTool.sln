@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -8,6 +7,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Application", "src\BidCalculationTool.Application\BidCalculationTool.Application.csproj", "{91C6BC81-FFA5-4C29-9CAA-327FCF7EFFF8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Domain", "src\BidCalculationTool.Domain\BidCalculationTool.Domain.csproj", "{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BidCalculationTool.Test", "test\BidCalculationTool.Test\BidCalculationTool.Test.csproj", "{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +31,13 @@ Global
 		{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D5A640D-08CF-40D7-B19C-3FBDC5F74C6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4E46F0-C657-4BCE-A634-818926DB2B53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBCBD642-33CF-4B90-8C52-C8D41E9028E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

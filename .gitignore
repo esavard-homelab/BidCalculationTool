@@ -17,3 +17,8 @@ dist/
 # Docker
 *.log
 docker-compose.override.yml
+
+# Coverage reports
+/coverage/
+/coverage-report/
+/coverage-reports/

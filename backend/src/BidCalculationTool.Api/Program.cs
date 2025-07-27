@@ -1,15 +1,21 @@
-using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using BidCalculationTool.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddControllers(); // Ajout du support des controllers
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Add custom JSON converter for VehicleTypeEnum
+        options.JsonSerializerOptions.Converters.Add(new BidCalculationTool.Api.Converters.VehicleTypeEnumJsonConverter());
+        // Configure to use camelCase for property names
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 builder.Services.AddEndpointsApiExplorer();
+
+// Inject the domain services
+builder.Services.AddApplication();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -44,3 +50,9 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+/// <summary>
+/// Program class for ASP.NET Core application entry point.
+/// This partial class is required for integration tests with WebApplicationFactory.
+/// </summary>
+public partial class Program { }
