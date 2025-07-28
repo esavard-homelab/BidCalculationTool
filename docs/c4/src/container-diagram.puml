@@ -1,0 +1,40 @@
+@startuml container-diagram
+!define RECTANGLE_COLOR #E1F5FE
+!define PERSON_COLOR #FFF3E0
+!define CONTAINER_COLOR #E8F5E8
+
+skinparam rectangle {
+    BackgroundColor RECTANGLE_COLOR
+    BorderColor #0277BD
+}
+
+skinparam actor {
+    BackgroundColor PERSON_COLOR
+    BorderColor #FF6F00
+}
+
+title Container Diagram - Bid Calculation Tool
+
+actor "Car Auction User" as user
+note right of user : Calculates the total price\nof a vehicle at auction
+
+rectangle "Docker Environment" as dockerEnv {
+    rectangle "Bid Calculation Tool" as bidSystem {
+        rectangle "Frontend Web App\n[Vue.js 3 / Docker]" as frontend #E8F5E8
+        note right of frontend : User interface to enter\nvehicle details and display\ncalculation results
+        
+        rectangle "API Backend\n[.NET Core 8 / Docker]" as api #E8F5E8
+        note right of api : Provides REST endpoints\nfor bid calculation
+        
+        rectangle "Domain Layer\n[.NET Core 8]" as domain #E8F5E8
+        note right of domain : Business logic to calculate\nfees based on vehicle type
+    }
+}
+
+user --> frontend : Uses\n[HTTPS]
+frontend --> api : Calls\n[REST API/JSON]
+api --> domain : Delegates to\n[Service calls]
+
+note right of dockerEnv : Docker Compose orchestrates\nfrontend and backend containers\nwith hot reload for development
+
+@enduml

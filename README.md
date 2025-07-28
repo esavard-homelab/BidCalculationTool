@@ -5,7 +5,6 @@
 A full-stack web application for calculating the total price of vehicles (Common or Luxury) at car auctions, including
 various fees and charges.
 
-
 ## Project Overview
 
 This application calculates the total cost of purchasing a vehicle at auction by applying different fees based on
@@ -18,66 +17,14 @@ vehicle type and price:
 
 ### Example Calculation
 For a **Common vehicle** priced at **$1,000**:
-- Vehicle Price: $1,000
-- Basic buyer fee: $50 (10%, max $50 for Common)
-- Special fee: $20 (2% for Common)
-- Association fee: $10 (price range $500-$1000)
-- Storage fee: $100
-- **Total**: $1,180
+- Vehicle Price: $1,000 + Basic buyer fee: $50 + Special fee: $20 + Association fee: $10 + Storage fee: $100 = 
+**Total: $1,180**
 
-
-## Architecture
-
-### Technology Stack
+## Technology Stack
 - **Backend**: .NET Core 8 (C#) with RESTful API
 - **Frontend**: Vue.js 3 with Vite
 - **Infrastructure**: Docker & Docker Compose
 - **Development**: Hot reload for both frontend and backend
-
-### Project Structure
-```
-BidCalculationTool/
-├── backend/                                   # .NET Core 8 backend (DDD architecture)
-│   ├── src/
-│   │   ├── BidCalculationTool.Api/            # API layer (controllers, endpoints, Program.cs)
-│   │   ├── BidCalculationTool.Application/    # Application layer (use cases, application services)
-│   │   ├── BidCalculationTool.Domain/         # Domain layer (entities, aggregates, interfaces)
-│   │   └── BidCalculationTool.Infrastructure/ # Infrastructure layer (implementations, data access)
-│   ├── tests/                                 # Backend tests
-│   ├── BidCalculationTool.sln                 # Solution file
-│   ├── backend.http                           # HTTP requests for testing
-│   ├── Dockerfile                             # Production image
-│   └── Dockerfile.dev                         # Development with hot reload
-├── frontend/                                  # Vue.js 3 application
-│   ├── src/
-│   │   ├── components/                        # Reusable UI components (BaseButton, etc.)
-│   │   ├── features/                          # Feature modules
-│   │   │   └── BidCalculator/
-│   │   │       ├── components/                # Feature-specific components (FeeBreakdown)
-│   │   │       ├── dto/                       # DTOs/types for API communication
-│   │   │       ├── services/                  # UI logic (BidCalculationService)
-│   │   │       └── BidCalculatorView.vue      # Main calculator view
-│   │   ├── services/                          # Global services (ApiClient)
-│   │   ├── dto/                               # Global DTOs/types (VehicleType)
-│   │   ├── router/                            # Router configuration
-│   │   ├── store/                             # State management
-│   │   └── assets/                            # Images, styles
-│   ├── e2e/                                   # End-to-end tests
-│   ├── public/                                # Static assets
-│   ├── package.json                           # Dependencies and scripts
-│   ├── Dockerfile                             # Production image (Nginx)
-│   └── Dockerfile.dev                         # Development with hot reload
-├── docs/                                      # Documentation
-│   ├── adr/                                   # Architectural Decision Records
-│   ├── requirements/                          # Challenge description
-│   └── c4/                                    # C4 architecture diagrams
-├── scripts/                                   # Automation scripts
-│   └── init.mjs                               # Project initialization
-├── docker-compose.parent.yml                  # Base Docker configuration
-├── docker-compose.dev.yml                     # Development overrides
-├── docker-compose.prod.yml                    # Production overrides
-└── package.json                               # Root project scripts
-```
 
 
 ## Getting Started
@@ -88,107 +35,89 @@ BidCalculationTool/
 
 ### Quick Start
 ```bash
-# Install dependencies and initialize environment
-npm install
-npm run init
-
-# Your application will be available at:
-# Frontend: http://localhost:5173 (Vite dev server)
-# Backend API: http://localhost:5000/swagger (Swagger UI)
+npm install && npm run init && npm run dev
 ```
+
+**Access:**
+- Frontend: http://localhost:5173 (development) 
+- Backend API: http://localhost:5000/swagger
+
+<!-- TODO: For production deployment, update access URLs to HTTPS:
+     - Frontend: https://yourdomain.com (served by Nginx with SSL)
+     - Backend API: https://api.yourdomain.com (or behind reverse proxy)
+     - Configure proper domain names and SSL certificates
+-->
 
 ### Available Commands
 ```bash
-npm run init    # Initialize and start development environment
-npm run dev     # Start development containers with hot reload
-npm run prod    # Build and start production containers
-npm run down    # Stop all containers
-npm run docs    # Generate C4 architecture diagrams
+npm run init      # Initialize and start development environment  
+npm run dev       # Start development containers with hot reload
+npm run prod      # Build and start production containers
+npm run test:ci   # Run all tests (backend + frontend)
+npm run docs      # Generate architecture diagrams
+npm run stop      # Stop all containers OR ctrl+C in terminal
 ```
 
-
-## Docker Configuration
-
-The project uses a multi-file Docker Compose setup for different environments:
-
-- **`docker-compose.parent.yml`**: Base configuration
-- **`docker-compose.dev.yml`**: Development overrides (hot reload, volume mounts)
-- **`docker-compose.prod.yml`**: Production overrides (optimized builds)
-
-### Development Environment
-- **Backend**: Uses .NET SDK with `dotnet watch` for hot reload
-- **Frontend**: Uses Node.js with Vite dev server for hot reload
-- **Volumes**: Source code mounted for real-time development
-
-### Production Environment  
-- **Backend**: Multi-stage build with optimized .NET runtime
-- **Frontend**: Multi-stage build with Nginx for static file serving
-- **Images**: Optimized for deployment (smaller size, security)
-
-
-## Development Workflow
-
-1. **Initialize**: `npm run init` - Sets up and starts development environment
-2. **Develop**: Edit code - changes are automatically reflected via hot reload
-3. **Test**: Access frontend at http://localhost:5173 and API at http://localhost:5000 (TODO: adjust URL)
-   - Use Swagger UI to test API endpoints
-   - Run unit tests in the backend with `dotnet test`
-4. **Deploy**: `npm run prod` - Build and test production images
-
-## Tests & Coverage
-
-- Test Results are available via GitHub Checks under the ".NET Test Results" section for each CI run.
-- Code coverage is tracked with [Codecov](https://codecov.io/gh/esavard-homelab/BidCalculationTool).
-- A full interactive test and coverage report (HTML) is generated on each CI run and [available here](https://github.com/esavard-homelab/BidCalculationTool/actions?query=workflow%3A%22CI+Pipeline%22) as the `backend-test-report` artifact.
+## Project Structure
+```
+BidCalculationTool/
+├── backend/                                   # .NET Core 8 backend
+│   ├── src/
+│   │   ├── BidCalculationTool.Api/            # API layer (controllers, endpoints, Program.cs)
+│   │   ├── BidCalculationTool.Application/    # Application layer (use cases, application services)
+│   │   ├── BidCalculationTool.Domain/         # Domain layer (entities, aggregates, interfaces)
+│   │   └── BidCalculationTool.Infrastructure/ # Infrastructure layer (implementations, data access)
+│   ├── test/                                 # Backend tests
+│   ├── BidCalculationTool.sln                 # Solution file
+│   ├── backend.http                           # HTTP requests for testing
+│   ├── Dockerfile                             # Production image
+│   └── Dockerfile.dev                         # Development with hot reload
+├── frontend/                                  # Vue.js 3 application
+│   ├── src/
+│   │   ├── core/                              # Reusable elements (services, utils, etc.)
+│   │   ├── modules/                           # Feature modules
+│   │   │   └── BidCalculator/
+│   │   │       ├── components/                # Feature-specific components (FeeBreakdown)
+│   │   │       ├── dto/                       # DTOs/types for API communication
+│   │   │       ├── services/                  # UI logic (BidCalculationService)
+│   │   │       ├── validators/                # UI fields value validators (VehiclePriceValidator)
+│   │   │       └── views/                     # Main calculator view
+│   │   ├── test/                              # Unit tests
+│   │   └── assets/                            # Images, styles
+│   ├── public/                                # Static assets
+│   ├── package.json                           # Dependencies and scripts
+│   ├── Dockerfile                             # Production image (Nginx)
+│   └── Dockerfile.dev                         # Development with hot reload
+├── docs/                                      # Documentation
+│   ├── adr/                                   # Architectural Decision Records
+│   ├── requirements/                          # Challenge description
+│   └── c4/                                    # C4 architecture diagrams
+├── scripts/                                   # Automation scripts
+├── docker-compose.parent.yml                  # Base Docker configuration
+├── docker-compose.dev.yml                     # Development overrides
+├── docker-compose.prod.yml                    # Production overrides
+└── package.json                               # Root project scripts
+```
 
 ## Documentation
 
-### Architectural Decisions
-Key architectural decisions are documented using ADR (Architectural Decision Records):
-- [ADR-001: Project Structure and Technology Stack](./docs/adr/001-project-structure-and-technology-stack.md)
-- [ADR-002: Docker and Docker Compose Usage](./docs/adr/002-docker-and-docker-compose-usage.md)
-- [ADR-003: REST over GraphQL](./docs/adr/003-use-rest-over-graphql.md)
-
-### Requirements
-The original coding challenge requirements are documented in the `docs/requirements` directory:
-- [Original Coding Challenge](./docs/requirements/coding-challenge.md)
+### Architecture & Decisions
+- [Requirements](./docs/requirements/coding-challenge.md) - Original coding challenge
+- [ADR-001](./docs/adr/001-project-structure-and-technology-stack.md) - Technology choices
+- [ADR-002](./docs/adr/002-docker-and-docker-compose-usage.md) - Docker strategy
+- [ADR-003](./docs/adr/003-use-rest-over-graphql.md) - REST over GraphQL
+- [ADR-004](./docs/adr/004-frontend-architecture.md) - Frontend architecture
+- [ADR-005](./docs/adr/005-observability-and-monitoring-strategy.md) - Observability and monitoring strategy
 
 ### C4 Architecture Diagrams
-The C4 model is used to visualize the architecture at different levels:
-- [Domain Storytelling Diagram](./docs/c4/diagrams/domain-storytelling-diagram.svg)
-- [Container Diagram](./docs/c4/diagrams/container-diagram.svg)
-
-You can generate these diagrams using the `npm run docs` command, which uses PlantUML to create SVG files from the C4
-model definitions. The resulting diagrams are stored in the `docs/c4/diagrams` directory.
-
+- [Container Diagram](./docs/c4/diagrams/container-diagram.svg) - System overview
+- [Sequence Diagram](./docs/c4/diagrams/sequence-diagram.svg) - User flow
 
 ## AI Usage Disclaimer
-AI was used as technical support in a "rubber duck debugging" approach, primarily for:
-
-- Validating architectural and technology choices (e.g., REST vs. GraphQL)
-- Proposing documentation drafts (README, ADR, API documentation)
-- Unblocking configuration issues and syntax problems
-
-No code was copied without critical review, adaptation, and testing. AI served as a 24/7 available technical colleague, 
-not as a substitute for critical thinking or system design.
-
-
-## Test Cases
-The application handles various test scenarios as specified in the requirements:
-
-| Vehicle Price | Type    | Basic Fee | Special Fee | Association Fee | Storage Fee | **Total**  |
-|---------------|---------|-----------|-------------|-----------------|-------------|------------|
-| $398.00       | Common  | $39.80    | $7.96       | $5.00           | $100.00     | **$550.76** |
-| $501.00       | Common  | $50.00    | $10.02      | $10.00          | $100.00     | **$671.02** |
-| $57.00        | Common  | $10.00    | $1.14       | $5.00           | $100.00     | **$173.14** |
-| $1,800.00     | Luxury  | $180.00   | $72.00      | $15.00          | $100.00     | **$2,167.00** |
-| $1,100.00     | Common  | $50.00    | $22.00      | $15.00          | $100.00     | **$1,287.00** |
-| $1,000,000.00 | Luxury  | $200.00   | $40,000.00  | $20.00          | $100.00     | **$1,040,320.00** |
+AI was used as technical support for architectural validation, documentation drafts, configuration debugging, and
+boilerplate generation. All code was critically reviewed, adapted, and tested.
 
 ---
 
-## Final Disclaimer
-*This project was developed as a technical assessment demonstrating full-stack development capabilities with modern
-tools and best practices. It showcases enterprise-grade architecture patterns, containerization, and development 
-workflows suitable for production environments. The implementation prioritizes code quality, maintainability, 
-and scalability over feature completeness.*
+*This project demonstrates full-stack development capabilities with modern tools and enterprise-grade architecture
+patterns, prioritizing code quality, maintainability, and scalability.*

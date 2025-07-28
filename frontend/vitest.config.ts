@@ -1,8 +1,14 @@
 import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    },
+  },
   test: {
     environment: 'jsdom',
     exclude: [
@@ -15,12 +21,19 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
+        'dist/',
         'node_modules/',
         'src/test/',
         'e2e/',
         '**/*.d.ts',
-        '**/*.config.*'
+        '**/*.config.*',
+        'src/App.vue',
+        'src/main.ts'
       ]
+    },
+    reporters: ['default', 'junit'],
+    outputFile: {
+      junit: './coverage/junit.xml'
     }
   }
 })

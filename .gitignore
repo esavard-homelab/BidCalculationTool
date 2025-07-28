@@ -18,7 +18,12 @@ dist/
 *.log
 docker-compose.override.yml
 
-# Coverage reports
+# Coverage & test results
 /coverage/
 /coverage-report/
 /coverage-reports/
+/backend/test/TestResults/
+/backend/coverage/
+/backend/coverage-reports/
+/coverage-summary.md
+/backend/test/BidCalculationTool.Test/TestResults/

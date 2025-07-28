@@ -3,14 +3,26 @@ using BidCalculationTool.Domain.Dto;
 namespace BidCalculationTool.Domain.Services;
 
 /// <summary>
-/// The IBidCalculationService interface defines the contract for bid calculation services.
+/// Defines the contract for bid calculation services.
+/// Provides operations for calculating vehicle auction bid totals including all applicable fees.
 /// </summary>
 public interface IBidCalculationService
 {
     /// <summary>
-    /// This method calculates the total price for a bid based on the provided request data.
+    /// Calculates the total price for a vehicle bid including all applicable fees.
     /// </summary>
-    /// <param name="request"></param>
-    /// <returns>The <see cref="BidCalculationResponseDto"/></returns>
+    /// <param name="request">The bid calculation request containing vehicle price and type</param>
+    /// <returns>A response containing the total cost and breakdown of all fees</returns>
+    /// <example>
+    /// <code>
+    /// var request = new BidCalculationRequestDto
+    /// {
+    ///     VehiclePrice = 1000m,
+    ///     VehicleType = VehicleTypeEnum.Common
+    /// };
+    /// var result = service.CalculateTotalPrice(request);
+    /// // result.TotalCost = 1180m (includes all fees)
+    /// </code>
+    /// </example>
     BidCalculationResponseDto CalculateTotalPrice(BidCalculationRequestDto request);
 }
