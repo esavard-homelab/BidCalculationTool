@@ -28,7 +28,8 @@ class ApiClient {
    * ```
    */
   async get<T>(endpoint: string): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`)
+    const url = this.buildUrl(endpoint)
+    const response = await fetch(url)
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
@@ -56,7 +57,8 @@ class ApiClient {
    * ```
    */
   async post<T, R>(endpoint: string, data: T): Promise<R> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const url = this.buildUrl(endpoint)
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,6 +72,25 @@ class ApiClient {
 
     return await response.json()
   }
+
+  /**
+   * Builds a properly formatted URL by combining base URL and endpoint.
+   * Handles missing or extra slashes between base URL and endpoint.
+   *
+   * @param endpoint - The API endpoint path
+   * @returns The complete, properly formatted URL
+   *
+   * @example
+   * ```typescript
+   * buildUrl('/api/data') // returns 'http://localhost:5000/api/data'
+   * buildUrl('api/data')  // returns 'http://localhost:5000/api/data'
+   * ```
+   */
+  private buildUrl(endpoint: string): string {
+    const baseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+    return `${baseUrl}${cleanEndpoint}`
+  }
 }
 
 /**
@@ -77,3 +98,4 @@ class ApiClient {
  * Pre-configured with the default backend URL.
  */
 export const apiClient = new ApiClient()
+export { ApiClient }

@@ -16,7 +16,7 @@ export interface BidCalculationResponse {
   vehiclePrice: number;
   /** The vehicle type used in calculation */
   vehicleType: string;
-  //TODO: replace by FeeBreakdown: dynamic list of fees
+  // TODO: Replace with FeeBreakdown: dynamic list of fees
   /** Basic buyer fee (10% of vehicle price with min/max limits) */
   basicBuyerFee: number;
   /** Seller's special fee (2% for Common, 4% for Luxury) */

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { apiClient } from '@/core/services/ApiClient'
+import { apiClient, ApiClient } from '@/core/services/ApiClient'
 
 // Mock global fetch
 const mockFetch = vi.fn()
@@ -16,12 +16,10 @@ describe('ApiClient', () => {
 
   describe('constructor', () => {
     it('should use default baseUrl when none provided', () => {
-      // L'instance exportée utilise l'URL par défaut
       expect(apiClient).toBeDefined()
     })
 
     it('should use custom baseUrl when provided', () => {
-      // Nous pouvons tester cela indirectement via les appels fetch
       expect(apiClient).toBeDefined()
     })
   })
@@ -180,7 +178,41 @@ describe('ApiClient', () => {
 
       await apiClient.get('api/data')
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:5000api/data')
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:5000/api/data')
+    })
+  })
+
+  describe('buildUrl edge cases', () => {
+    it('should handle baseUrl with trailing slash and endpoint with leading slash', async () => {
+      const client = new ApiClient('http://localhost:5000/')
+      const mockResponse = { ok: true, json: vi.fn().mockResolvedValue({}) }
+      global.fetch = vi.fn().mockResolvedValue(mockResponse)
+      await client.get('/api/test')
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:5000/api/test')
+    })
+
+    it('should handle baseUrl with trailing slash and endpoint without leading slash', async () => {
+      const client = new ApiClient('http://localhost:5000/')
+      const mockResponse = { ok: true, json: vi.fn().mockResolvedValue({}) }
+      global.fetch = vi.fn().mockResolvedValue(mockResponse)
+      await client.get('api/test')
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:5000/api/test')
+    })
+
+    it('should handle baseUrl without trailing slash and endpoint with leading slash', async () => {
+      const client = new ApiClient('http://localhost:5000')
+      const mockResponse = { ok: true, json: vi.fn().mockResolvedValue({}) }
+      global.fetch = vi.fn().mockResolvedValue(mockResponse)
+      await client.get('/api/test')
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:5000/api/test')
+    })
+
+    it('should handle baseUrl without trailing slash and endpoint without leading slash', async () => {
+      const client = new ApiClient('http://localhost:5000')
+      const mockResponse = { ok: true, json: vi.fn().mockResolvedValue({}) }
+      global.fetch = vi.fn().mockResolvedValue(mockResponse)
+      await client.get('api/test')
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:5000/api/test')
     })
   })
 })
