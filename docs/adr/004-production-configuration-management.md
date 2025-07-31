@@ -4,7 +4,8 @@
 Proposed
 
 ## Context
-The application currently uses basic configuration suitable for development but lacks production-ready configuration management for secrets, environment-specific settings, and security configurations.
+The application currently uses basic configuration suitable for development but lacks production-ready configuration
+management for secrets, environment-specific settings, and security configurations.
 
 ## Decision
 Implement a comprehensive configuration strategy for production deployment.

@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "init": "npx zx scripts/init.mjs",
-    "dev": "docker-compose -f docker-compose.parent.yml -f docker-compose.dev.yml up --build",
-    "prod": "docker-compose -f docker-compose.parent.yml -f docker-compose.prod.yml up --build",
+    "dev": "docker compose -f docker-compose.parent.yml -f docker-compose.dev.yml up --build",
+    "prod": "docker compose -f docker-compose.parent.yml -f docker-compose.prod.yml up --build",
     "docs": "docker run --rm -v $(pwd)/docs:/work -w /work plantuml/plantuml -tsvg -o ../diagrams c4/src/*.puml",
-    "stop": "docker-compose down --timeout 10",
+    "stop": "docker compose down --timeout 10",
     "test:ci": "npm run test:ci:backend && npm run test:ci:frontend",
     "test:ci:frontend": "cd frontend && npm run lint && npm run test:unit:ci && npm run test:coverage && npm run type-check && npm run build",
     "test:ci:backend": "dotnet clean backend/BidCalculationTool.sln && dotnet restore backend/BidCalculationTool.sln && dotnet build backend/BidCalculationTool.sln --no-restore && dotnet test backend/BidCalculationTool.sln --no-build --verbosity normal --collect:\"XPlat Code Coverage\"",

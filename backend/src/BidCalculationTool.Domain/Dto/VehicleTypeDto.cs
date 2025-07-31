@@ -6,7 +6,7 @@ namespace BidCalculationTool.Domain.Dto;
 /// This is typically used in the dropdown in the UI.
 /// </summary>
 public record VehicleTypeDto
- {
-     public string Value { get; init; } = string.Empty;
-     public string Label { get; init; } = string.Empty;
- }
+{
+    public string Value { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+}

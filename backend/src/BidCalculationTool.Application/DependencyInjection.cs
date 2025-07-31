@@ -1,3 +1,4 @@
+using BidCalculationTool.Domain.FeeStrategies;
 using BidCalculationTool.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,10 @@ public static class DependencyInjection
     /// <returns>The updated IServiceCollection.</returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddSingleton<IFeeStrategy, BasicBuyerFeeStrategy>();
+        services.AddSingleton<IFeeStrategy, SpecialFeeStrategy>();
+        services.AddSingleton<IFeeStrategy, AssociationFeeStrategy>();
+        services.AddSingleton<IFeeStrategy, FixedStorageFeeStrategy>();
         services.AddScoped<IBidCalculationService, BidCalculationService>();
         return services;
     }

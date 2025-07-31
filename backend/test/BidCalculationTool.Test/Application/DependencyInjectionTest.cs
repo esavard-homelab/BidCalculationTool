@@ -44,15 +44,15 @@ public class DependencyInjectionTest
         using var scope1 = serviceProvider.CreateScope();
         using var scope2 = serviceProvider.CreateScope();
 
-        var service1a = scope1.ServiceProvider.GetRequiredService<IBidCalculationService>();
-        var service1b = scope1.ServiceProvider.GetRequiredService<IBidCalculationService>();
+        var service1A = scope1.ServiceProvider.GetRequiredService<IBidCalculationService>();
+        var service1B = scope1.ServiceProvider.GetRequiredService<IBidCalculationService>();
         var service2 = scope2.ServiceProvider.GetRequiredService<IBidCalculationService>();
 
         // Same scope should return same instance (scoped lifetime)
-        Assert.Same(service1a, service1b);
+        Assert.Same(service1A, service1B);
 
         // Different scopes should return different instances
-        Assert.NotSame(service1a, service2);
+        Assert.NotSame(service1A, service2);
     }
 
     [Fact]

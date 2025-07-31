@@ -21,8 +21,8 @@ We have chosen a **multi-file Docker Compose strategy** with environment-specifi
 
 Uses Docker Compose override pattern:
 ```bash
-# Development: docker-compose -f docker-compose.parent.yml -f docker-compose.dev.yml up
-# Production: docker-compose -f docker-compose.parent.yml -f docker-compose.prod.yml up
+# Development: docker compose -f docker-compose.parent.yml -f docker-compose.dev.yml up
+# Production: docker compose -f docker-compose.parent.yml -f docker-compose.prod.yml up
 ```
 
 ## Consequences

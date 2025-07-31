@@ -29,7 +29,7 @@ describe('ApiClient', () => {
       const mockData = { id: 1, name: 'Test' }
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue(mockData)
+        json: vi.fn().mockResolvedValue(mockData),
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -43,7 +43,7 @@ describe('ApiClient', () => {
     it('should throw error when GET request fails', async () => {
       const mockResponse = {
         ok: false,
-        status: 404
+        status: 404,
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -54,7 +54,7 @@ describe('ApiClient', () => {
     it('should handle different HTTP error statuses', async () => {
       const mockResponse = {
         ok: false,
-        status: 500
+        status: 500,
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -68,7 +68,7 @@ describe('ApiClient', () => {
       const responseData = { id: 1, ...postData }
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue(responseData)
+        json: vi.fn().mockResolvedValue(responseData),
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -89,7 +89,7 @@ describe('ApiClient', () => {
       const postData = { invalid: 'data' }
       const mockResponse = {
         ok: false,
-        status: 422
+        status: 422,
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -108,25 +108,27 @@ describe('ApiClient', () => {
       const postData = { test: 'data' }
       const mockResponse = {
         ok: false,
-        status: 401
+        status: 401,
       }
       mockFetch.mockResolvedValue(mockResponse)
 
-      await expect(apiClient.post('/unauthorized', postData)).rejects.toThrow('HTTP error! status: 401')
+      await expect(apiClient.post('/unauthorized', postData)).rejects.toThrow(
+        'HTTP error! status: 401',
+      )
     })
 
     it('should properly serialize complex objects in POST body', async () => {
       const complexData = {
         nested: {
           array: [1, 2, 3],
-          object: { key: 'value' }
+          object: { key: 'value' },
         },
         nullValue: null,
-        boolValue: true
+        boolValue: true,
       }
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({ success: true })
+        json: vi.fn().mockResolvedValue({ success: true }),
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -160,7 +162,7 @@ describe('ApiClient', () => {
     it('should handle endpoints with leading slash', async () => {
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({})
+        json: vi.fn().mockResolvedValue({}),
       }
       mockFetch.mockResolvedValue(mockResponse)
 
@@ -172,7 +174,7 @@ describe('ApiClient', () => {
     it('should handle endpoints without leading slash', async () => {
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue({})
+        json: vi.fn().mockResolvedValue({}),
       }
       mockFetch.mockResolvedValue(mockResponse)
 

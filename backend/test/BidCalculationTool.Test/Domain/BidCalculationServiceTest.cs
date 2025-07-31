@@ -1,259 +1,184 @@
 using BidCalculationTool.Domain.Services;
 using BidCalculationTool.Domain.Dto;
 using BidCalculationTool.Domain.Enums;
+using BidCalculationTool.Domain.FeeStrategies;
+using Moq;
 
 namespace BidCalculationTool.Test.Domain;
 
 public class BidCalculationServiceTest
 {
+    private readonly Mock<IFeeStrategy> _mockBasicFeeStrategy;
+    private readonly Mock<IFeeStrategy> _mockSpecialFeeStrategy;
+    private readonly Mock<IFeeStrategy> _mockAssociationFeeStrategy;
+    private readonly Mock<IFeeStrategy> _mockStorageFeeStrategy;
     private readonly BidCalculationService _service;
 
     public BidCalculationServiceTest()
     {
-        _service = new BidCalculationService();
-    }
+        // Create mocked fee strategies
+        _mockBasicFeeStrategy = new Mock<IFeeStrategy>();
+        _mockSpecialFeeStrategy = new Mock<IFeeStrategy>();
+        _mockAssociationFeeStrategy = new Mock<IFeeStrategy>();
+        _mockStorageFeeStrategy = new Mock<IFeeStrategy>();
 
-    [Theory]
-    [InlineData(398.00, VehicleTypeEnum.Common, 39.80, 7.96, 5.00, 100.00, 550.76)]
-    [InlineData(501.00, VehicleTypeEnum.Common, 50.00, 10.02, 10.00, 100.00, 671.02)]
-    [InlineData(57.00, VehicleTypeEnum.Common, 10.00, 1.14, 5.00, 100.00, 173.14)]
-    [InlineData(1800.00, VehicleTypeEnum.Luxury, 180.00, 72.00, 15.00, 100.00, 2167.00)]
-    [InlineData(1100.00, VehicleTypeEnum.Common, 50.00, 22.00, 15.00, 100.00, 1287.00)]
-    [InlineData(1000000.00, VehicleTypeEnum.Luxury, 200.00, 40000.00, 20.00, 100.00, 1040320.00)]
-    public void CalculateTotalPrice_ShouldReturnCorrectFeesAndTotalPrice_ForGivenVehiclePriceAndType(
-        decimal vehiclePrice,
-        VehicleTypeEnum vehicleType,
-        decimal expectedBasicFee,
-        decimal expectedSpecialFee,
-        decimal expectedAssociationFee,
-        decimal expectedStorageFee,
-        decimal expectedTotal)
-    {
-        // Arrange
-        var service = new BidCalculationService();
-        var request = new BidCalculationRequestDto
+        // Setup BasicBuyerFee strategy
+        _mockBasicFeeStrategy.Setup(x => x.FeeName).Returns("BasicBuyerFee");
+        _mockBasicFeeStrategy.Setup(x => x.DisplayName).Returns("Basic Buyer Fee");
+        _mockBasicFeeStrategy.Setup(x => x.Description).Returns("10% of vehicle price with minimum and maximum limits based on vehicle type");
+
+        // Setup SpecialFee strategy
+        _mockSpecialFeeStrategy.Setup(x => x.FeeName).Returns("SpecialFee");
+        _mockSpecialFeeStrategy.Setup(x => x.DisplayName).Returns("Seller's Special Fee");
+        _mockSpecialFeeStrategy.Setup(x => x.Description).Returns("2% for Common vehicles, 4% for Luxury vehicles");
+
+        // Setup AssociationFee strategy
+        _mockAssociationFeeStrategy.Setup(x => x.FeeName).Returns("AssociationFee");
+        _mockAssociationFeeStrategy.Setup(x => x.DisplayName).Returns("Association Fee");
+        _mockAssociationFeeStrategy.Setup(x => x.Description).Returns("Tiered fee based on vehicle price ranges");
+
+        // Setup StorageFee strategy
+        _mockStorageFeeStrategy.Setup(x => x.FeeName).Returns("StorageFee");
+        _mockStorageFeeStrategy.Setup(x => x.DisplayName).Returns("Storage Fee");
+        _mockStorageFeeStrategy.Setup(x => x.Description).Returns("Fixed storage fee for all vehicles");
+
+        var feeStrategies = new List<IFeeStrategy>
         {
-            VehiclePrice = vehiclePrice,
-            VehicleType = vehicleType
-        };
-        var expectedResponse = new BidCalculationResponseDto
-        {
-            VehiclePrice = vehiclePrice,
-            VehicleType = vehicleType,
-            BasicBuyerFee = expectedBasicFee,
-            SellerSpecialFee = expectedSpecialFee,
-            AssociationFee = expectedAssociationFee,
-            StorageFee = expectedStorageFee,
-            TotalCost = expectedTotal
+            _mockBasicFeeStrategy.Object,
+            _mockSpecialFeeStrategy.Object,
+            _mockAssociationFeeStrategy.Object,
+            _mockStorageFeeStrategy.Object
         };
 
-        // Act
-        var actualResponse = service.CalculateTotalPrice(
-            request);
-
-        // Assert
-        Assert.Equal(expectedResponse, actualResponse);
+        _service = new BidCalculationService(feeStrategies);
     }
 
     [Fact]
-    public void CalculateBasicBuyerFee_Common_ShouldApplyMinAndMaxLimits()
+    public void CalculateTotalPrice_ShouldOrchestrateFeeStrategiesCorrectly()
     {
         // Arrange
-        const decimal minFee = 10.00m;
-        const decimal maxFee = 50.00m;
-
-        var requestMin = new BidCalculationRequestDto
-        {
-            VehiclePrice = 50.00m,
-            VehicleType = VehicleTypeEnum.Common
-        };
-
-        var requestMax = new BidCalculationRequestDto
+        var request = new BidCalculationRequestDto
         {
             VehiclePrice = 1000.00m,
             VehicleType = VehicleTypeEnum.Common
         };
-        var service = new BidCalculationService();
 
-        // Act
-        var actualMinBasicBuyerFee = service.CalculateTotalPrice(requestMin);
-        var actualMaxBasicBuyerFee = service.CalculateTotalPrice(requestMax);
-
-        // Assert
-        Assert.Equal(minFee, actualMinBasicBuyerFee.BasicBuyerFee);
-        Assert.Equal(maxFee, actualMaxBasicBuyerFee.BasicBuyerFee);
-    }
-
-    [Fact]
-    public void CalculateBasicBuyerFee_Luxury_ShouldApplyMinAndMaxLimits()
-    {
-        // Arrange
-        const decimal minFee = 25.00m;
-        const decimal maxFee = 200.00m;
-
-        var requestMin = new BidCalculationRequestDto
-        {
-            VehiclePrice = 100.00m,
-            VehicleType = VehicleTypeEnum.Luxury
-        };
-
-        var requestMax = new BidCalculationRequestDto
-        {
-            VehiclePrice = 5000.00m,
-            VehicleType = VehicleTypeEnum.Luxury
-        };
-        var service = new BidCalculationService();
-
-        // Act
-        var actualMinBasicBuyerFee = service.CalculateTotalPrice(requestMin);
-        var actualMaxBasicBuyerFee = service.CalculateTotalPrice(requestMax);
-
-        // Assert
-        Assert.Equal(minFee, actualMinBasicBuyerFee.BasicBuyerFee);
-        Assert.Equal(maxFee, actualMaxBasicBuyerFee.BasicBuyerFee);
-    }
-
-    [Theory]
-    [InlineData(250, 5.00)]   // $1-$500
-    [InlineData(750, 10.00)]  // $501-$1000
-    [InlineData(2000, 15.00)] // $1001-$3000
-    [InlineData(5000, 20.00)] // $3001+
-    public void CalculateAssociationFee_ShouldReturnCorrectFee_BasedOnPriceRange(
-        decimal price, decimal expected)
-    {
-        // Arrange
-        var service = new BidCalculationService();
-        var request = new BidCalculationRequestDto
-        {
-            VehiclePrice = price,
-            VehicleType = VehicleTypeEnum.Common // Association fee is the same for Common and Luxury
-        };
-        var expectedResponse = new BidCalculationResponseDto
-        {
-            VehiclePrice = price,
-            VehicleType = VehicleTypeEnum.Common,
-            AssociationFee = expected,
-            BasicBuyerFee = 0,
-            SellerSpecialFee = 0,
-            StorageFee = 0,
-            TotalCost = 0
-        };
-
-        // Act
-        var response = service.CalculateTotalPrice(request);
-
-        // Assert
-        Assert.Equal(expectedResponse.AssociationFee, response.AssociationFee);
-    }
-
-    [Fact]
-    public void CalculateTotalPrice_WithCommonVehicle_ShouldReturnCorrectValues()
-    {
-        // Arrange
-        var request = new BidCalculationRequestDto
-        {
-            VehiclePrice = 1000m,
-            VehicleType = VehicleTypeEnum.Common
-        };
+        // Setup mock returns
+        _mockBasicFeeStrategy.Setup(x => x.Calculate(1000.00m, VehicleTypeEnum.Common)).Returns(50.00m);
+        _mockSpecialFeeStrategy.Setup(x => x.Calculate(1000.00m, VehicleTypeEnum.Common)).Returns(20.00m);
+        _mockAssociationFeeStrategy.Setup(x => x.Calculate(1000.00m, VehicleTypeEnum.Common)).Returns(10.00m);
+        _mockStorageFeeStrategy.Setup(x => x.Calculate(1000.00m, VehicleTypeEnum.Common)).Returns(100.00m);
 
         // Act
         var result = _service.CalculateTotalPrice(request);
 
-        // Assert - Access all properties to cover all getters
+        // Assert
         Assert.NotNull(result);
-        Assert.Equal(1000m, result.VehiclePrice);
+        Assert.Equal(1000.00m, result.VehiclePrice);
         Assert.Equal(VehicleTypeEnum.Common, result.VehicleType);
-        Assert.Equal(50m, result.BasicBuyerFee); // 10% of 1000, capped at 50
-        Assert.Equal(20m, result.SellerSpecialFee); // 2% of 1000
-        Assert.Equal(10m, result.AssociationFee); // 1000 is in 500-1000 range
-        Assert.Equal(100m, result.StorageFee); // Fixed fee
-        Assert.Equal(1180m, result.TotalCost); // 1000 + 50 + 20 + 10 + 100
+        Assert.Equal(1180.00m, result.TotalCost); // 1000 + 50 + 20 + 10 + 100
+
+        // Verify FeeBreakdown is populated correctly
+        Assert.NotNull(result.FeeBreakdown);
+        Assert.Equal(4, result.FeeBreakdown.Count);
+
+        var basicFeeItem = result.FeeBreakdown.First(f => f.Name == "BasicBuyerFee");
+        Assert.Equal("Basic Buyer Fee", basicFeeItem.DisplayName);
+        Assert.Equal(50.00m, basicFeeItem.Amount);
+        Assert.NotNull(basicFeeItem.Description);
+
+        // Verify all strategies were called
+        _mockBasicFeeStrategy.Verify(x => x.Calculate(1000.00m, VehicleTypeEnum.Common), Times.Once);
+        _mockSpecialFeeStrategy.Verify(x => x.Calculate(1000.00m, VehicleTypeEnum.Common), Times.Once);
+        _mockAssociationFeeStrategy.Verify(x => x.Calculate(1000.00m, VehicleTypeEnum.Common), Times.Once);
+        _mockStorageFeeStrategy.Verify(x => x.Calculate(1000.00m, VehicleTypeEnum.Common), Times.Once);
     }
 
     [Fact]
-    public void CalculateTotalPrice_WithLuxuryVehicle_ShouldReturnCorrectValues()
+    public void CalculateTotalPrice_ShouldCallAllStrategiesWithSameParameters()
     {
         // Arrange
         var request = new BidCalculationRequestDto
         {
-            VehiclePrice = 2000m,
+            VehiclePrice = 2500.00m,
             VehicleType = VehicleTypeEnum.Luxury
         };
+
+        // Setup mock returns (values don't matter for this test)
+        _mockBasicFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(100.00m);
+        _mockSpecialFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(50.00m);
+        _mockAssociationFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(15.00m);
+        _mockStorageFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(100.00m);
+
+        // Act
+        _service.CalculateTotalPrice(request);
+
+        // Assert - Verify all strategies received the same parameters
+        _mockBasicFeeStrategy.Verify(x => x.Calculate(2500.00m, VehicleTypeEnum.Luxury), Times.Once);
+        _mockSpecialFeeStrategy.Verify(x => x.Calculate(2500.00m, VehicleTypeEnum.Luxury), Times.Once);
+        _mockAssociationFeeStrategy.Verify(x => x.Calculate(2500.00m, VehicleTypeEnum.Luxury), Times.Once);
+        _mockStorageFeeStrategy.Verify(x => x.Calculate(2500.00m, VehicleTypeEnum.Luxury), Times.Once);
+    }
+
+    [Fact]
+    public void CalculateTotalPrice_ShouldCalculateCorrectTotal()
+    {
+        // Arrange
+        var request = new BidCalculationRequestDto
+        {
+            VehiclePrice = 500.00m,
+            VehicleType = VehicleTypeEnum.Common
+        };
+
+        // Setup different fee amounts to test total calculation
+        _mockBasicFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(25.00m);
+        _mockSpecialFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(15.00m);
+        _mockAssociationFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(8.00m);
+        _mockStorageFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>())).Returns(100.00m);
 
         // Act
         var result = _service.CalculateTotalPrice(request);
 
-        // Assert - Access all properties to cover all getters
-        Assert.NotNull(result);
-        Assert.Equal(2000m, result.VehiclePrice);
-        Assert.Equal(VehicleTypeEnum.Luxury, result.VehicleType);
-        Assert.Equal(200m, result.BasicBuyerFee); // 10% of 2000, capped at 200
-        Assert.Equal(80m, result.SellerSpecialFee); // 4% of 2000
-        Assert.Equal(15m, result.AssociationFee); // 2000 is in 1000-3000 range
-        Assert.Equal(100m, result.StorageFee); // Fixed fee
-        Assert.Equal(2395m, result.TotalCost); // 2000 + 200 + 80 + 15 + 100
+        // Assert
+        var expectedTotal = 500.00m + 25.00m + 15.00m + 8.00m + 100.00m; // 648.00
+        Assert.Equal(expectedTotal, result.TotalCost);
     }
 
     [Fact]
-    public void CalculateTotalPrice_WithNegativeVehiclePrice_ShouldThrowArgumentException()
+    public void Constructor_WithNoStrategies_ShouldThrowArgumentException()
+    {
+        // Arrange
+        // ReSharper disable once CollectionNeverUpdated.Local
+        var emptyStrategies = new List<IFeeStrategy>();
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() => new BidCalculationService(emptyStrategies));
+        Assert.Equal("No fee strategies registered. Please register at least one fee strategy.", exception.Message);
+    }
+
+    [Fact]
+    public void Constructor_WithNullStrategies_ShouldThrowArgumentNullException()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => new BidCalculationService(null!));
+    }
+
+    [Fact]
+    public void CalculateTotalPrice_WhenStrategyThrowsException_ShouldPropagateException()
     {
         // Arrange
         var request = new BidCalculationRequestDto
         {
-            VehiclePrice = -100m,
+            VehiclePrice = 1000.00m,
             VehicleType = VehicleTypeEnum.Common
         };
 
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => _service.CalculateTotalPrice(request));
-        Assert.Equal("Vehicle price cannot be negative.", exception.Message);
-    }
-
-    [Fact]
-    public void CalculateTotalPrice_WithZeroVehiclePrice_ShouldThrowArgumentException()
-    {
-        // Arrange
-        var request = new BidCalculationRequestDto
-        {
-            VehiclePrice = 0m,
-            VehicleType = VehicleTypeEnum.Common
-        };
+        // Setup one strategy to throw an exception
+        _mockBasicFeeStrategy.Setup(x => x.Calculate(It.IsAny<decimal>(), It.IsAny<VehicleTypeEnum>()))
+                            .Throws(new ArgumentException("Invalid vehicle type"));
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => _service.CalculateTotalPrice(request));
-        Assert.Equal("Vehicle price cannot be negative.", exception.Message);
-    }
-
-    [Fact]
-    public void CalculateTotalPrice_WithInvalidVehicleType_ShouldThrowArgumentException()
-    {
-        // Arrange
-        var request = new BidCalculationRequestDto
-        {
-            VehiclePrice = 1000m,
-            VehicleType = (VehicleTypeEnum)999 // Invalid enum value
-        };
-
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => _service.CalculateTotalPrice(request));
-        Assert.Contains("Invalid vehicle type:", exception.Message);
-    }
-
-    [Fact]
-    public void CalculateTotalPrice_WithInvalidVehicleTypeForSpecialFee_ShouldThrowArgumentException()
-    {
-        // Arrange - This test specifically targets the CalculateSpecialFee path
-        // by using a scenario where we know CalculateBasicBuyerFee would succeed
-        // but CalculateSpecialFee would fail
-        var request = new BidCalculationRequestDto
-        {
-            VehiclePrice = 100m, // Low price to ensure we hit CalculateSpecialFee
-            VehicleType = (VehicleTypeEnum)888 // Different invalid enum value
-        };
-
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => _service.CalculateTotalPrice(request));
-        Assert.Contains("Invalid vehicle type:", exception.Message);
-        Assert.Contains("888", exception.Message);
+        Assert.Equal("Invalid vehicle type", exception.Message);
     }
 }

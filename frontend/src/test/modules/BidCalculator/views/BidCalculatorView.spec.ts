@@ -11,39 +11,61 @@ import type { VehicleTypeOption } from '@/modules/BidCalculator/services/BidCalc
 vi.mock('@/modules/BidCalculator/services/BidCalculationService', () => ({
   bidCalculationService: {
     getVehicleTypes: vi.fn(),
-    calculateBid: vi.fn()
-  }
+    calculateBid: vi.fn(),
+  },
 }))
 
 vi.mock('@/modules/BidCalculator/validators/VehiclePriceValidator', () => ({
   VehiclePriceValidator: {
-    validate: vi.fn()
-  }
+    validate: vi.fn(),
+  },
 }))
 
-// Mock du composant FeeBreakdown
-vi.mock('@/modules/BidCalculator/components/FeeBreakdown.vue', () => ({
+// Mock CalculationBreakdown component
+vi.mock('@/modules/BidCalculator/components/CalculationBreakdown.vue', () => ({
   default: {
-    name: 'FeeBreakdown',
+    name: 'CalculationBreakdown',
     props: ['calculation'],
-    template: '<div class="fee-breakdown-mock">Fee Breakdown Mock</div>'
-  }
+    template: '<div class="calculation-breakdown-mock">Calculation Breakdown Mock</div>',
+  },
 }))
 
 describe('BidCalculatorView.vue', () => {
   const mockVehicleTypes: VehicleTypeOption[] = [
     { value: 'Common', label: 'Common' },
-    { value: 'Luxury', label: 'Luxury' }
+    { value: 'Luxury', label: 'Luxury' },
   ]
 
   const mockCalculationResponse: BidCalculationResponse = {
     vehiclePrice: 1000,
     vehicleType: 'Common',
-    basicBuyerFee: 50,
-    sellerSpecialFee: 25,
-    associationFee: 15,
-    storageFee: 100,
-    totalCost: 1190
+    totalCost: 1190,
+    feeBreakdown: [
+      {
+        name: 'BasicBuyerFee',
+        displayName: 'Basic Buyer Fee',
+        amount: 50,
+        description: 'Basic buyer fee calculation',
+      },
+      {
+        name: 'SellerSpecialFee',
+        displayName: "Seller's Special Fee",
+        amount: 25,
+        description: 'Special fee for sellers',
+      },
+      {
+        name: 'AssociationFee',
+        displayName: 'Association Fee',
+        amount: 15,
+        description: 'Association membership fee',
+      },
+      {
+        name: 'StorageFee',
+        displayName: 'Storage Fee',
+        amount: 100,
+        description: 'Vehicle storage fee',
+      },
+    ],
   }
 
   beforeEach(() => {
@@ -72,8 +94,7 @@ describe('BidCalculatorView.vue', () => {
       const priceInput = wrapper.find('#vehiclePrice')
 
       expect(priceInput.exists()).toBe(true)
-      expect(priceInput.attributes('type')).toBe('number'
-      )
+      expect(priceInput.attributes('type')).toBe('number')
       expect(priceInput.attributes('min')).toBe('0')
       expect(priceInput.attributes('step')).toBe('0.01')
     })
@@ -151,7 +172,7 @@ describe('BidCalculatorView.vue', () => {
 
       expect(bidCalculationService.calculateBid).toHaveBeenCalledWith({
         vehiclePrice: 1000,
-        vehicleType: 'Common'
+        vehicleType: 'Common',
       })
     })
 
@@ -227,7 +248,7 @@ describe('BidCalculatorView.vue', () => {
 
       expect(bidCalculationService.calculateBid).toHaveBeenCalledWith({
         vehiclePrice: 1000,
-        vehicleType: 'Luxury'
+        vehicleType: 'Luxury',
       })
     })
   })
@@ -242,11 +263,11 @@ describe('BidCalculatorView.vue', () => {
       await nextTick()
 
       expect(wrapper.find('.results-section').exists()).toBe(true)
-      expect(wrapper.find('h2').text()).toBe('Fee Breakdown')
-      expect(wrapper.find('.fee-breakdown-mock').exists()).toBe(true)
+      expect(wrapper.find('h2').text()).toBe('Calculation Breakdown')
+      expect(wrapper.find('.calculation-breakdown-mock').exists()).toBe(true)
     })
 
-    it('should pass correct calculation data to FeeBreakdown component', async () => {
+    it('should pass correct calculation data to CalculationBreakdown component', async () => {
       const wrapper = await createWrapper()
 
       const priceInput = wrapper.find('#vehiclePrice')
@@ -254,12 +275,14 @@ describe('BidCalculatorView.vue', () => {
       await priceInput.trigger('input')
       await nextTick()
 
-      const feeBreakdown = wrapper.findComponent({ name: 'FeeBreakdown' })
-      expect(feeBreakdown.props('calculation')).toEqual(mockCalculationResponse)
+      const calculationBreakdown = wrapper.findComponent({ name: 'CalculationBreakdown' })
+      expect(calculationBreakdown.props('calculation')).toEqual(mockCalculationResponse)
     })
 
     it('should handle calculation service errors', async () => {
-      vi.mocked(bidCalculationService.calculateBid).mockRejectedValue(new Error('Calculation failed'))
+      vi.mocked(bidCalculationService.calculateBid).mockRejectedValue(
+        new Error('Calculation failed'),
+      )
 
       const wrapper = await createWrapper()
 
@@ -269,7 +292,9 @@ describe('BidCalculatorView.vue', () => {
       await flushPromises()
       await nextTick()
 
-      expect(wrapper.find('.error-message').text()).toBe('Failed to calculate bid. Please try again.')
+      expect(wrapper.find('.error-message').text()).toBe(
+        'Failed to calculate bid. Please try again.',
+      )
     })
 
     it('should clear previous errors before new calculation', async () => {
@@ -356,12 +381,12 @@ describe('BidCalculatorView.vue', () => {
       // Verify calculation was called
       expect(bidCalculationService.calculateBid).toHaveBeenCalledWith({
         vehiclePrice: 2000,
-        vehicleType: 'Common'
+        vehicleType: 'Common',
       })
 
       // Verify results displayed
       expect(wrapper.find('.results-section').exists()).toBe(true)
-      expect(wrapper.findComponent({ name: 'FeeBreakdown' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'CalculationBreakdown' }).exists()).toBe(true)
     })
 
     it('should handle complete error recovery workflow', async () => {

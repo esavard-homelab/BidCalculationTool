@@ -1,30 +1,30 @@
 <template>
-  <div class="fee-breakdown">
+  <div class="calculation-breakdown">
     <table class="breakdown-table">
       <tbody>
+        <!-- Vehicle Price (not a fee, but part of calculation) -->
         <tr>
           <td>Vehicle Price:</td>
           <td class="amount">{{ formatCurrency(calculation.vehiclePrice) }}</td>
         </tr>
-        <tr>
-          <td>Basic Buyer Fee:</td>
-          <td class="amount">{{ formatCurrency(calculation.basicBuyerFee) }}</td>
+
+        <!-- Dynamic fees from feeBreakdown -->
+        <tr
+          v-for="fee in calculation.feeBreakdown"
+          :key="fee.name"
+          :title="fee.description"
+          class="fee-row"
+        >
+          <td>{{ fee.displayName }}:</td>
+          <td class="amount">{{ formatCurrency(fee.amount) }}</td>
         </tr>
-        <tr>
-          <td>Seller's Special Fee:</td>
-          <td class="amount">{{ formatCurrency(calculation.sellerSpecialFee) }}</td>
-        </tr>
-        <tr>
-          <td>Association Fee:</td>
-          <td class="amount">{{ formatCurrency(calculation.associationFee) }}</td>
-        </tr>
-        <tr>
-          <td>Storage Fee:</td>
-          <td class="amount">{{ formatCurrency(calculation.storageFee) }}</td>
-        </tr>
+
+        <!-- Total Cost (highlighted) -->
         <tr class="total-row">
           <td><strong>Total Cost:</strong></td>
-          <td class="amount"><strong>{{ formatCurrency(calculation.totalCost) }}</strong></td>
+          <td class="amount">
+            <strong>{{ formatCurrency(calculation.totalCost) }}</strong>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -33,10 +33,10 @@
 
 <script setup lang="ts">
 import type { BidCalculationResponse } from '../dto/BidCalculationDto'
-import {CurrencyFormatter} from '@/core/utils/CurrencyFormatter.ts';
+import { CurrencyFormatter } from '@/core/utils/CurrencyFormatter'
 
 /**
- * Props interface for the FeeBreakdown component.
+ * Props interface for the CalculationBreakdown component.
  */
 interface Props {
   /** The bid calculation response containing all fee details */
@@ -57,7 +57,7 @@ function formatCurrency(amount: number): string {
 </script>
 
 <style scoped>
-.fee-breakdown {
+.calculation-breakdown {
   background-color: #f8f9fa;
   padding: 1.5rem;
   border-radius: 8px;
@@ -81,6 +81,16 @@ function formatCurrency(amount: number): string {
 .amount {
   text-align: right;
   font-family: 'Courier New', monospace;
+}
+
+/* Hover effect for fee rows with descriptions */
+.fee-row {
+  cursor: help;
+  transition: background-color 0.2s ease;
+}
+
+.fee-row:hover {
+  background-color: #e9ecef;
 }
 
 .total-row {

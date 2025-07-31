@@ -45,11 +45,41 @@ public class BidCalculationControllerTest
         {
             VehiclePrice = 1000m,
             VehicleType = VehicleTypeEnum.Common,
-            BasicBuyerFee = 50m,
-            SellerSpecialFee = 20m,
-            AssociationFee = 10m,
-            StorageFee = 100m,
-            TotalCost = 1180m
+            TotalCost = 1180m,
+            FeeBreakdown =
+            [
+                new FeeBreakdownItem
+                {
+                    Name = "BasicBuyerFee",
+                    DisplayName = "Basic Buyer Fee",
+                    Amount = 50m,
+                    Description = "Basic buyer fee calculation"
+                },
+
+                new FeeBreakdownItem
+                {
+                    Name = "SellerSpecialFee",
+                    DisplayName = "Seller's Special Fee",
+                    Amount = 20m,
+                    Description = "Special fee for sellers"
+                },
+
+                new FeeBreakdownItem
+                {
+                    Name = "AssociationFee",
+                    DisplayName = "Association Fee",
+                    Amount = 10m,
+                    Description = "Association membership fee"
+                },
+
+                new FeeBreakdownItem
+                {
+                    Name = "StorageFee",
+                    DisplayName = "Storage Fee",
+                    Amount = 100m,
+                    Description = "Vehicle storage fee"
+                }
+            ]
         };
 
         _mockBidCalculationService
@@ -65,11 +95,16 @@ public class BidCalculationControllerTest
 
         Assert.Equal(expectedResponse.VehiclePrice, actualResponse.VehiclePrice);
         Assert.Equal(expectedResponse.VehicleType, actualResponse.VehicleType);
-        Assert.Equal(expectedResponse.BasicBuyerFee, actualResponse.BasicBuyerFee);
-        Assert.Equal(expectedResponse.SellerSpecialFee, actualResponse.SellerSpecialFee);
-        Assert.Equal(expectedResponse.AssociationFee, actualResponse.AssociationFee);
-        Assert.Equal(expectedResponse.StorageFee, actualResponse.StorageFee);
         Assert.Equal(expectedResponse.TotalCost, actualResponse.TotalCost);
+        Assert.Equal(expectedResponse.FeeBreakdown.Count, actualResponse.FeeBreakdown.Count);
+
+        for (var i = 0; i < expectedResponse.FeeBreakdown.Count; i++)
+        {
+            Assert.Equal(expectedResponse.FeeBreakdown[i].Name, actualResponse.FeeBreakdown[i].Name);
+            Assert.Equal(expectedResponse.FeeBreakdown[i].DisplayName, actualResponse.FeeBreakdown[i].DisplayName);
+            Assert.Equal(expectedResponse.FeeBreakdown[i].Amount, actualResponse.FeeBreakdown[i].Amount);
+            Assert.Equal(expectedResponse.FeeBreakdown[i].Description, actualResponse.FeeBreakdown[i].Description);
+        }
 
         _mockBidCalculationService.Verify(s => s.CalculateTotalPrice(request), Times.Once);
     }
@@ -88,11 +123,41 @@ public class BidCalculationControllerTest
         {
             VehiclePrice = 2000m,
             VehicleType = VehicleTypeEnum.Luxury,
-            BasicBuyerFee = 200m,
-            SellerSpecialFee = 80m,
-            AssociationFee = 15m,
-            StorageFee = 100m,
-            TotalCost = 2395m
+            TotalCost = 2395m,
+            FeeBreakdown =
+            [
+                new FeeBreakdownItem
+                {
+                    Name = "BasicBuyerFee",
+                    DisplayName = "Basic Buyer Fee",
+                    Amount = 200m,
+                    Description = "Basic buyer fee calculation"
+                },
+
+                new FeeBreakdownItem
+                {
+                    Name = "SellerSpecialFee",
+                    DisplayName = "Seller's Special Fee",
+                    Amount = 80m,
+                    Description = "Special fee for sellers"
+                },
+
+                new FeeBreakdownItem
+                {
+                    Name = "AssociationFee",
+                    DisplayName = "Association Fee",
+                    Amount = 15m,
+                    Description = "Association membership fee"
+                },
+
+                new FeeBreakdownItem
+                {
+                    Name = "StorageFee",
+                    DisplayName = "Storage Fee",
+                    Amount = 100m,
+                    Description = "Vehicle storage fee"
+                }
+            ]
         };
 
         _mockBidCalculationService
@@ -106,7 +171,19 @@ public class BidCalculationControllerTest
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualResponse = Assert.IsType<BidCalculationResponseDto>(okResult.Value);
 
-        Assert.Equal(expectedResponse, actualResponse);
+        Assert.Equal(expectedResponse.VehiclePrice, actualResponse.VehiclePrice);
+        Assert.Equal(expectedResponse.VehicleType, actualResponse.VehicleType);
+        Assert.Equal(expectedResponse.TotalCost, actualResponse.TotalCost);
+        Assert.Equal(expectedResponse.FeeBreakdown.Count, actualResponse.FeeBreakdown.Count);
+
+        for (var i = 0; i < expectedResponse.FeeBreakdown.Count; i++)
+        {
+            Assert.Equal(expectedResponse.FeeBreakdown[i].Name, actualResponse.FeeBreakdown[i].Name);
+            Assert.Equal(expectedResponse.FeeBreakdown[i].DisplayName, actualResponse.FeeBreakdown[i].DisplayName);
+            Assert.Equal(expectedResponse.FeeBreakdown[i].Amount, actualResponse.FeeBreakdown[i].Amount);
+            Assert.Equal(expectedResponse.FeeBreakdown[i].Description, actualResponse.FeeBreakdown[i].Description);
+        }
+
         _mockBidCalculationService.Verify(s => s.CalculateTotalPrice(request), Times.Once);
     }
 

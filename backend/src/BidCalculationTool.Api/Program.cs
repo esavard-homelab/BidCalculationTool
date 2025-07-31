@@ -54,7 +54,6 @@ if (app.Environment.IsDevelopment())
 // - Configure SSL certificates in appsettings.Production.json
 // - Set up proper TLS termination at load balancer or reverse proxy level
 // - Update CORS policy to use HTTPS origins instead of HTTP
-
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 
