@@ -20,11 +20,7 @@
       <div class="form-group">
         <label for="vehicleType">Vehicle Type:</label>
         <select id="vehicleType" v-model="vehicleType" @change="calculateBid">
-          <option
-            v-for="type in vehicleTypes"
-            :key="type.value"
-            :value="type.value"
-          >
+          <option v-for="type in vehicleTypes" :key="type.value" :value="type.value">
             {{ type.label }}
           </option>
         </select>
@@ -32,8 +28,8 @@
     </div>
 
     <div v-if="calculation" class="results-section">
-      <h2>Fee Breakdown</h2>
-      <fee-breakdown :calculation="calculation" />
+      <h2>Calculation Breakdown</h2>
+      <calculation-breakdown :calculation="calculation" />
     </div>
 
     <div v-if="error" class="error-message">
@@ -47,8 +43,8 @@ import { ref, onMounted } from 'vue'
 import { bidCalculationService } from '../services/BidCalculationService'
 import type { BidCalculationResponse } from '../dto/BidCalculationDto'
 import type { VehicleTypeOption } from '../services/BidCalculationService'
-import FeeBreakdown from '../components/FeeBreakdown.vue'
-import {VehiclePriceValidator} from '@/modules/BidCalculator/validators/VehiclePriceValidator.ts';
+import { VehiclePriceValidator } from '@/modules/BidCalculator/validators/VehiclePriceValidator.ts'
+import CalculationBreakdown from '../components/CalculationBreakdown.vue'
 
 // Reactive state variables
 /** The vehicle price input by the user */
@@ -102,8 +98,11 @@ async function calculateBid() {
   error.value = null
 
   // Do not calculate if vehicle price is not set
-  if (vehiclePrice.value === null || vehiclePrice.value === undefined ||
-    typeof vehiclePrice.value !== 'number') {
+  if (
+    vehiclePrice.value === null ||
+    vehiclePrice.value === undefined ||
+    typeof vehiclePrice.value !== 'number'
+  ) {
     calculation.value = null
     return
   }
@@ -119,7 +118,7 @@ async function calculateBid() {
   try {
     calculation.value = await bidCalculationService.calculateBid({
       vehiclePrice: vehiclePrice.value,
-      vehicleType: vehicleType.value
+      vehicleType: vehicleType.value,
     })
   } catch (err) {
     error.value = 'Failed to calculate bid. Please try again.'
@@ -162,7 +161,8 @@ label {
   font-weight: bold;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -189,7 +189,8 @@ input, select {
   margin-top: 2rem;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #333;
 }
 </style>

@@ -10,13 +10,13 @@ test('VehiclePriceValidator.validate with valid price', () => {
 test('VehiclePriceValidator.validate with zero price', () => {
   const price = 0
   const result = VehiclePriceValidator.validate(price)
-  expect(result).toBe('Vehicle price must be greater than 0')
+  expect(result).toBe('Vehicle price must be $1 or greater')
 })
 
 test('VehiclePriceValidator.validate with negative price', () => {
   const price = -1000
   const result = VehiclePriceValidator.validate(price)
-  expect(result).toBe('Vehicle price must be greater than 0')
+  expect(result).toBe('Vehicle price must be $1 or greater')
 })
 
 test('VehiclePriceValidator.validate with price exceeding limit', () => {

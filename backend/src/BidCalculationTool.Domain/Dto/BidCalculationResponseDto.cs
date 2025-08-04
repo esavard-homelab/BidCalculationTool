@@ -8,11 +8,9 @@ namespace BidCalculationTool.Domain.Dto;
 /// </summary>
 public record BidCalculationResponseDto
 {
+    public required List<FeeBreakdownItem> FeeBreakdown { get; init; }
     public required decimal VehiclePrice { get; init; }
     public required VehicleTypeEnum VehicleType { get; init; }
-    public required decimal BasicBuyerFee { get; init; }
-    public required decimal SellerSpecialFee { get; init; }
-    public required decimal AssociationFee { get; init; }
-    public required decimal StorageFee { get; init; }
     public required decimal TotalCost { get; init; }
+
 }

@@ -39,11 +39,25 @@ public class BidCalculationApiIntegrationTest(WebApplicationFactory<Program> fac
         Assert.True(responseObject.TryGetProperty("totalCost", out var totalCost));
         Assert.True(totalCost.GetDecimal() > 1000.00m); // Should be greater than base price
 
-        // Verify all fee properties are present (frontend needs them)
-        Assert.True(responseObject.TryGetProperty("basicBuyerFee", out _));
-        Assert.True(responseObject.TryGetProperty("sellerSpecialFee", out _));
-        Assert.True(responseObject.TryGetProperty("associationFee", out _));
-        Assert.True(responseObject.TryGetProperty("storageFee", out _));
+        // Verify that the feeBreakdown structure is present
+        Assert.True(responseObject.TryGetProperty("feeBreakdown", out var feeBreakdown));
+        Assert.True(feeBreakdown.GetArrayLength() > 0);
+
+        // Verify feeBreakdown contains expected fee items
+        var feeBreakdownArray = feeBreakdown.EnumerateArray().ToArray();
+        Assert.Contains(feeBreakdownArray, fee => fee.GetProperty("name").GetString() == "BasicBuyerFee");
+        Assert.Contains(feeBreakdownArray, fee => fee.GetProperty("name").GetString() == "SpecialFee");
+        Assert.Contains(feeBreakdownArray, fee => fee.GetProperty("name").GetString() == "AssociationFee");
+        Assert.Contains(feeBreakdownArray, fee => fee.GetProperty("name").GetString() == "StorageFee");
+
+        // Verify each fee item has required properties
+        foreach (var fee in feeBreakdownArray)
+        {
+            Assert.True(fee.TryGetProperty("name", out _));
+            Assert.True(fee.TryGetProperty("displayName", out _));
+            Assert.True(fee.TryGetProperty("amount", out _));
+            Assert.True(fee.TryGetProperty("description", out _));
+        }
     }
 
     [Theory]
@@ -154,8 +168,7 @@ public class BidCalculationApiIntegrationTest(WebApplicationFactory<Program> fac
         // Verify ALL properties that frontend expects are present with correct types
         var expectedProperties = new[]
         {
-            "vehiclePrice", "vehicleType", "basicBuyerFee",
-            "sellerSpecialFee", "associationFee", "storageFee", "totalCost"
+            "vehiclePrice", "vehicleType", "totalCost", "feeBreakdown"
         };
 
         foreach (var propertyName in expectedProperties)
@@ -164,11 +177,33 @@ public class BidCalculationApiIntegrationTest(WebApplicationFactory<Program> fac
                 $"Missing expected property: {propertyName}");
 
             // All numeric properties should be numbers (not strings)
-            if (propertyName != "vehicleType")
+            if (propertyName != "vehicleType" && propertyName != "feeBreakdown")
             {
                 Assert.True(property.ValueKind == JsonValueKind.Number,
                     $"Property {propertyName} should be numeric");
             }
+        }
+
+        // Verify feeBreakdown structure specifically
+        Assert.True(responseObject.TryGetProperty("feeBreakdown", out var feeBreakdown));
+        Assert.True(feeBreakdown.ValueKind == JsonValueKind.Array,
+            "feeBreakdown should be an array");
+
+        var feeBreakdownArray = feeBreakdown.EnumerateArray().ToArray();
+        Assert.True(feeBreakdownArray.Length >= 4,
+            "feeBreakdown should contain at least 4 fee items");
+
+        // Verify each fee item in breakdown has the correct structure
+        foreach (var fee in feeBreakdownArray)
+        {
+            Assert.True(fee.TryGetProperty("name", out var name) && name.ValueKind == JsonValueKind.String,
+                "Each fee should have a string 'name' property");
+            Assert.True(fee.TryGetProperty("displayName", out var displayName) && displayName.ValueKind == JsonValueKind.String,
+                "Each fee should have a string 'displayName' property");
+            Assert.True(fee.TryGetProperty("amount", out var amount) && amount.ValueKind == JsonValueKind.Number,
+                "Each fee should have a numeric 'amount' property");
+            Assert.True(fee.TryGetProperty("description", out var description),
+                "Each fee should have a 'description' property");
         }
     }
 }
