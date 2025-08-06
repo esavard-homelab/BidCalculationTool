@@ -111,7 +111,7 @@ BidCalculationTool/
 - [ADR-001](./docs/adr/001-project-structure-and-technology-stack.md) - Project Structure and Technology Stack
 - [ADR-002](./docs/adr/002-docker-and-docker-compose-usage.md) - Docker and Docker Compose Usage
 - [ADR-003](./docs/adr/003-use-rest-over-graphql.md) - Choosing REST over GraphQL
-- [ADR-004](./docs/adr/004-frontend-architecture.md) - Production Configuration and Environment Management
+- [ADR-004](./docs/adr/004-production-configuration-management.md) - Production Configuration and Environment Management
 - [ADR-005](./docs/adr/005-observability-and-monitoring-strategy.md) - Observability and Monitoring Strategy
 - [ADR-006](./docs/adr/006-frontend-resilience-and-internationalization.md) - Frontend Resilience and i18n Improvements
 
