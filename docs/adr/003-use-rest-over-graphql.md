@@ -1,4 +1,4 @@
-# ADR-004: Choosing REST over GraphQL
+# ADR-003: Choosing REST over GraphQL
 
 ## Status
 Accepted
