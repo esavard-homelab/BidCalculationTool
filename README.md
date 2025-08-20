@@ -5,6 +5,19 @@
 A full-stack web application for calculating the total price of vehicles (Common or Luxury) at car auctions, including
 various fees and charges with dynamic fee structure support.
 
+## Note on scope and approach
+
+This technical assignment was intentionally over-engineered from a staff developer / team lead perspective.
+The goal was to demonstrate how I would deliver a proof of concept / MVP that could then be handed over to a development team.
+
+That's why the project includes:
+
+* Documentation (ADR, C4 diagrams) to support knowledge transfer.
+* A simple onboarding workflow (Docker, CI/CD) to get new developers productive quickly.
+* A clean, extensible codebase designed with scalability and maintainability in mind.
+
+The emphasis was not only on solving the problem, but also on showing how I structure projects for evolution, collaboration, and long-term value.
+
 ## Project Overview
 
 This application calculates the total cost of purchasing a vehicle at auction by applying different fees based on
