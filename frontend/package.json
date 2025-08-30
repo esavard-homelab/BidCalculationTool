@@ -16,7 +16,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "vitest-browser-vue": "^1.0.0",
+    "vitest-browser-vue": "^1.1.0",
     "vue": "^3.5.17"
   },
   "devDependencies": {
